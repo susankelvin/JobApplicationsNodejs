@@ -2,8 +2,8 @@
 
 function config(app){
     var path = require('path');
-    var routes = require('../routes/index');
-    var users = require('../routes/users');
+    var routes = require('../controllers/index');
+    var users = require('../controllers/users');
     var express = require('express');
 
 // uncomment after placing your favicon in /public
