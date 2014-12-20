@@ -16,7 +16,7 @@ html
                         span.icon-bar
                         span.icon-bar
                         span.icon-bar
-                    a.navbar-brand(href="#") Job applications
+                    a.navbar-brand(href="/") Job applications
                 div.collapse.navbar-collapse
                     ul.nav.navbar-nav
                         li.active
@@ -28,7 +28,15 @@ html
                         li
                             a(href="#") Login
 
+        if errorMessage
+            div.alert.alert-danger= errorMessage
+
         div.container.body-content
             block content
 
+        hr
+        - var year = (new Date()).getFullYear()
+        footer.text-center &copy; #{year}
+
         block scripts
+            

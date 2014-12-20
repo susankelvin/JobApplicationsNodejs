@@ -7,6 +7,7 @@ function config(app) {
         err.status = 404;
         next(err);
     });
+
     // error handlers
 
     // development error handler
