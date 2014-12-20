@@ -1,6 +1,6 @@
 'use strict';
 
-function initialize(app) {
+function config(app) {
     var logger = require('morgan');
     var cookieParser = require('cookie-parser');
     var bodyParser = require('body-parser');
@@ -11,4 +11,6 @@ function initialize(app) {
     app.use(cookieParser());
 }
 
-module.exports = initialize;
+module.exports = {
+    config: config
+};

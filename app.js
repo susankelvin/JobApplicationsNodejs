@@ -2,7 +2,7 @@
 'use strict';
 
 var debug = require('debug')('JobApplications');
-var configuration = require('./configuration/config');
+var middleware = require('./configuration/middleware');
 var express = require('express');
 var path = require('path');
 var routes = require('./configuration/routes.js');
@@ -15,7 +15,7 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
 // set up middlewares
-configuration(app);
+middleware.config(app);
 routes.config(app);
 error.config(app);
 
