@@ -25,8 +25,16 @@ html
                         li
                             a(href="#") Link 2
                     ul.nav.navbar-nav.navbar-right
-                        li
-                            a(href="#") Login
+                        if isAuthenticated
+                            li
+                                a(href='/') Profile
+                            li
+                                a(href='/') Log out
+                        else
+                            li
+                                a(href="/") Login
+                            li
+                                a(href='/') Register
 
         if errorMessage
             div.alert.alert-danger= errorMessage
