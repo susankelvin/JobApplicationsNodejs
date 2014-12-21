@@ -6,7 +6,6 @@ var settings = require('./configuration/express');
 var routes = require('./configuration/routes.js');
 var error = require('./configuration/error.js');
 var database = require('./configuration/mongoose');
-
 var app = express();
 
 // set up application

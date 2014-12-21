@@ -6,6 +6,7 @@ function config(app) {
     var bodyParser = require('body-parser');
     var path = require('path');
     var checkAuthenticated = require('../middleware/check-authentication.js');
+    var session = require('./session');
 
     // view engine setup
     app.set('views', path.join(path.dirname(__dirname), 'views'));
@@ -15,6 +16,7 @@ function config(app) {
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({extended: false}));
     app.use(cookieParser());
+    session.config(app);
     app.use(checkAuthenticated);
 }
 
