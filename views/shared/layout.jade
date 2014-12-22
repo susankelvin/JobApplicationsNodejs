@@ -1,7 +1,7 @@
 doctype html
 html
     head
-        title= title
+        title JobApplications | #{title}
         block styles
         link(rel='stylesheet', href='/stylesheets/bootstrap.css')
         link(rel='stylesheet', href='/stylesheets/style.css')
@@ -30,7 +30,7 @@ html
                                 a(href='/') Log out
                         else
                             li
-                                a(href="/") Login
+                                a(href="/users/login") Login
                             li
                                 a(href='/users/register') Register
 

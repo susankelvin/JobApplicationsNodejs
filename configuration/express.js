@@ -7,6 +7,7 @@ function config(app) {
     var path = require('path');
     var checkAuthenticated = require('../middleware/check-authentication.js');
     var session = require('./session');
+    var passport = require('./passport');
 
     // view engine setup
     app.set('views', path.join(path.dirname(__dirname), 'views'));
@@ -17,6 +18,7 @@ function config(app) {
     app.use(bodyParser.urlencoded({extended: false}));
     app.use(cookieParser());
     session.config(app);
+    passport.config(app);
     app.use(checkAuthenticated);
 }
 

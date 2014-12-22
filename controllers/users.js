@@ -2,6 +2,7 @@
 
 var express = require('express');
 var router = express.Router();
+var passport = require('passport');
 var userManager = require('../data/userManager');
 
 /* GET users listing. */
@@ -9,15 +10,16 @@ var userManager = require('../data/userManager');
 //    res.send('respond with a resource');
 //});
 
+// Register
 router.get('/register', function (req, res) {
-    res.render('users/register');
+    res.render('users/register', {title: 'Register'});
 });
 
 router.post('/register', function (req, res) {
     var username = req.body.username,
         password = req.body.password;
 
-    userManager.register(username, password, function(err, user){
+    userManager.register(username, password, function (err, user) {
         if (err) {
             res.redirect('/users/register');
         }
@@ -29,5 +31,12 @@ router.post('/register', function (req, res) {
         }
     });
 });
+
+// Login
+router.get('/login', function (req, res) {
+    res.render('users/login', {title: 'Login'});
+});
+
+router.post('/login', passport.authenticate('local', {successRedirect: '/', failureRedirect: '/users/login'}));
 
 module.exports = router;

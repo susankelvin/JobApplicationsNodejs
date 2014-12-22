@@ -1,0 +1,28 @@
+extends ../shared/layout
+
+block content
+    h1 Login
+    br
+    form.form-horizontal(action="/users/login", method="post", role="form")
+        div.form-group
+            label.control-label.col-md-2(for="username") Username
+            div.col-md-10
+                input#username.form-control(type="text", name="username", placeholder="Username", required)
+        div.form-group
+            label.control-label.col-md-2(for="password") Password
+            div.col-md-10
+                input#password.form-control(type="password", name="password", placeholder="Password", required)
+        div.form-group
+            div.col-md-10.col-md-offset-2
+                button.btn.btn-primary(type="submit") Login
+                | &nbsp;
+                a.btn.btn-success(href="/") Cancel
+
+block scripts
+    script(src="/javascripts/jquery.validate.js")
+
+    script.
+        $("form").validate({
+            errorClass: "text-danger",
+            errorElement: "span"
+        });

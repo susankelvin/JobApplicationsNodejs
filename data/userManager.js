@@ -2,6 +2,7 @@
 
 var SALT_SIZE = 256;
 var crypto = require('crypto');
+var buffer = require('buffer');
 var User = require('../models/User');
 
 // callback(err, user)
@@ -29,10 +30,10 @@ function login(username, password, callback){
             if (err) {
                 callback(err);
             }
-            else if (user) {
-                passwordHash = hashPassword(password, user.salt);
-                if (passwordHash === user.passwordHash) {
-                    callback(null, user);
+            else if (user && user.length === 1) {
+                passwordHash = hashPassword(password, user[0].salt);
+                if (passwordHash === user[0].passwordHash) {
+                    callback(null, user[0]);
                 }
                 else {
                     callback(null, false);
@@ -52,9 +53,12 @@ function findById(id, callback){
 // Returns password hmac
 function hashPassword(password, salt) {
     var passwordHash,
-        hmac;
+        hmac,
+        saltBuffer;
 
-    hmac = crypto.createHmac('md5', salt);
+    console.log(salt);
+    saltBuffer = new Buffer(salt, 'hex');
+    hmac = crypto.createHmac('md5', saltBuffer);
     hmac.update(password);
     passwordHash = hmac.digest('hex');
     return passwordHash;
