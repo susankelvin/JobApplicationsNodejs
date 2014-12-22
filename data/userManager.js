@@ -47,7 +47,12 @@ function login(username, password, callback){
 
 // callback(err, user)
 function findById(id, callback){
-    var user = User.findById(id, callback);
+    User.findById(id, callback);
+}
+
+// callback(err, user)
+function findByName(username, callback){
+    User.findOne({username: username}, callback);
 }
 
 // Returns password hmac
@@ -66,5 +71,6 @@ function hashPassword(password, salt) {
 module.exports = {
     register: register,
     login: login,
-    findById: findById
+    findById: findById,
+    findByName: findByName
 };

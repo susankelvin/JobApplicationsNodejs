@@ -7,25 +7,74 @@ var userManager = require('../data/userManager');
 
 // Register
 router.get('/register', function (req, res) {
-    res.render('users/register', {title: 'Register'});
+    res.render('users/register', getRegisterModel());
 });
 
-router.post('/register', function (req, res) {
-    var username = req.body.username,
-        password = req.body.password;
+router.post('/register', function (req, res, next) {
+    var username = '',
+        password = '',
+        confirmPassword = '',
+        valid = true;
 
-    userManager.register(username, password, function (err, user) {
+    if (req.body) {
+        username = req.body.username;
+        password = req.body.password;
+        confirmPassword = req.body['confirm-password'];
+    }
+
+    if ((!username) || (username.length < 4) || (username.length > 20)) {
+        valid = false;
+        res.locals.errorMessage = 'Invalid username';
+    }
+    else if ((!password) || (password.length < 4) || (password.length > 20)) {
+        valid = false;
+        res.locals.errorMessage = 'Invalid password';
+    }
+    else if (password !== confirmPassword) {
+        valid = false;
+        res.locals.errorMessage = 'Passwords do not match.';
+    }
+
+    if (!valid) {
+        return res.status(400).render('users/register', getRegisterModel(username));
+    }
+
+    userManager.findByName(username, function (err, user) {
         if (err) {
-            res.redirect('/users/register');
+            next(err);
         }
         else if (user) {
-            res.redirect('/');
+            res.locals.errorMessage = 'Username is already taken.';
+            res.status(400).render('users/register', getRegisterModel(username));
         }
         else {
-            res.redirect('/users/register');
+            userManager.register(username, password, function (err, user) {
+                if (err) {
+                    next(err);
+                }
+                else if (user) {
+                    req.login(user, function (err) {
+                        if (err) {
+                            next(err);
+                        }
+
+                        res.redirect('/');
+                    });
+                }
+                else {
+                    res.status(400).redirect('/users/register', getRegisterModel(username));
+                }
+            });
         }
     });
 });
+
+function getRegisterModel(username) {
+    return {
+        title: 'Register',
+        username: username || ''
+    };
+}
 
 // Login
 router.get('/login', function (req, res) {
