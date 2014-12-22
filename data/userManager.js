@@ -56,7 +56,6 @@ function hashPassword(password, salt) {
         hmac,
         saltBuffer;
 
-    console.log(salt);
     saltBuffer = new Buffer(salt, 'hex');
     hmac = crypto.createHmac('md5', saltBuffer);
     hmac.update(password);

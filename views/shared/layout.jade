@@ -27,7 +27,9 @@ html
                             li
                                 a(href='/') Profile
                             li
-                                a(href='/') Log out
+                                a#logout(href='/') Log out
+                                form(action="/users/logout", method="post")
+                                    input#btnLogout.hidden(type="submit")
                         else
                             li
                                 a(href="/users/login") Login
@@ -46,5 +48,13 @@ html
 
         script(src='/javascripts/jquery.js')
         script(src='/javascripts/bootstrap.js')
+
+        if isAuthenticated
+            script.
+                $('#logout').on('click', function () {
+                    $('#btnLogout').click();
+                    return false;
+                });
+
         block scripts
             
