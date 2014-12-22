@@ -23,11 +23,8 @@ function config(app) {
     passport.serializeUser(function(user, done) {
         done(null, user.id);
     });
-
     passport.deserializeUser(function(id, done) {
-        userManager.findById(id, function(err, user) {
-            done(err, user);
-        });
+        userManager.findById(id, done);
     });
     app.use(passport.initialize());
     app.use(passport.session());

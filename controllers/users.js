@@ -5,11 +5,6 @@ var router = express.Router();
 var passport = require('passport');
 var userManager = require('../data/userManager');
 
-/* GET users listing. */
-//router.get('/', function (req, res) {
-//    res.send('respond with a resource');
-//});
-
 // Register
 router.get('/register', function (req, res) {
     res.render('users/register', {title: 'Register'});
