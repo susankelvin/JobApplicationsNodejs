@@ -78,10 +78,39 @@ function getRegisterModel(username) {
 
 // Login
 router.get('/login', function (req, res) {
-    res.render('users/login', {title: 'Login'});
+    res.render('users/login', getLoginModel());
 });
 
-router.post('/login', passport.authenticate('local', {successRedirect: '/', failureRedirect: '/users/login'}));
+router.post('/login', function (req, res, next) {
+    passport.authenticate('local', function (err, user, info) {
+        var username;
+
+        if (err) {
+            return next(err);
+        }
+
+        if (!user) {
+            res.locals.errorMessage = 'Invalid username or password.';
+            username = req.body ? req.body.username : '';
+            return res.render('users/login', getLoginModel(username));
+        }
+
+        req.logIn(user, function (err) {
+            if (err) {
+                return next(err);
+            }
+
+            return res.redirect('/');
+        });
+    })(req, res, next);
+});
+
+function getLoginModel(username) {
+    return {
+        title: 'Login',
+        username: username || ''
+    };
+}
 
 // Logout
 router.post('/logout', function (req, res) {
