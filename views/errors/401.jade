@@ -1,0 +1,15 @@
+extends ../shared/layout
+block content
+    div.panel.panel-danger
+        div.panel-heading
+            h2 Unauthorized
+        div.panel-body
+            | The requested page requires authorization. &nbsp;
+            a(href="/users/login") Login
+            | &nbsp; or &nbsp;
+            a(href="/users/register") register &nbsp;
+            | and try again.
+        div.panel-footer
+            small
+                | Back to &nbsp;
+                a(href="/") Home

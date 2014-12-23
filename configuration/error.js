@@ -1,11 +1,9 @@
 'use strict';
 
 function config(app) {
-    // catch 404 and forward to error handler
+    // catch 404
     app.use(function (req, res, next) {
-        var err = new Error('Not Found');
-        err.status = 404;
-        next(err);
+        res.status(404).render('errors/404');
     });
 
     // error handlers
