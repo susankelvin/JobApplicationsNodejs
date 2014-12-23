@@ -3,13 +3,15 @@ extends shared/layout
 block content
     div.jumbotron
         h1.text-center Welcome to JobApplications!
-        br
-        br
-        div.text-center
-            p Looking for a place to save record of Your job applications? You have found it &#x263a;
-            p
-                | We offer unlimited space and privacy. Only You have access to Your account.
-                | We don't track You. We don't collect any personal details about You.
-                | We don't share any single piece of Your information.
-            p And, yeah, it's free.
-            a.btn.btn-primary.btn-lg(href="/users/register") Register
+    div.panel.panel-default
+        //div.panel-heading.jumbotron
+        //    h1.text-center Welcome to JobApplications!
+        div.panel-body
+            div.text-center.lead
+                p Looking for a place to save record of Your job applications? You have found it &#x263a;
+                p
+                    | We offer unlimited space and privacy. Only You have access to Your account.
+                    | We don't track You. We don't collect any personal details about You.
+                    | We don't share any single piece of Your information.
+                p And, yeah, it's free.
+                a.btn.btn-primary.btn-lg(href="/users/register") Register

@@ -17,7 +17,7 @@ html
                     a.navbar-brand(href="/") Job applications
                 div.collapse.navbar-collapse
                     ul.nav.navbar-nav
-                        li.active
+                        li
                             a(href="#") Link 1
                                 span.sr-only (current)
                         li
@@ -25,7 +25,8 @@ html
                     ul.nav.navbar-nav.navbar-right
                         if isAuthenticated
                             li
-                                a(href='/') Profile
+                                a(href='/') Profile &nbsp;
+                                    span.glyphicon.glyphicon-user
                             li
                                 a#logout(href='/') Log out
                                 form(action="/users/logout", method="post")
