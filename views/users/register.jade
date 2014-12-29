@@ -27,17 +27,24 @@ block content
 
 block scripts
     script(src="/javascripts/jquery.validate.js")
+    script(src="/javascripts/additional-methods.js")
 
     script.
         $("form").validate({
             errorClass: "text-danger",
             errorElement: "span",
             rules: {
+                password: {
+                    pattern: /^\w{4,20}$/
+                },
                 "confirm-password": {
                     equalTo: "#password"
                 }
             },
             messages: {
+                password: {
+                    pattern: "Allowed are letters (A-Z, a-z), numbers (0-9) and _"
+                },
                 "confirm-password": {
                     equalTo: "Content does not match the Password field."
                 }
