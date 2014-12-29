@@ -12,6 +12,7 @@ var passport = require('passport');
 var userManager = require('../data/userManager');
 var authentication = require('../middleware/authentication');
 var userModels = require('../view_models/users');
+var antiforgery = require('../middleware/antiforgery');
 
 // Register
 router.get('/register', function (req, res) {

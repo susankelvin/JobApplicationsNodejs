@@ -1,0 +1,12 @@
+extends ../shared/layout
+
+block content
+    div.panel.panel-danger
+        div.panel-heading
+            h2 Validation failed
+        div.panel-body.
+            We are not able to verify your identity. Due to safety reasons, please, login again.
+        div.panel-footer
+            small
+                | Back to &nbsp;
+                a(href="/") Home
