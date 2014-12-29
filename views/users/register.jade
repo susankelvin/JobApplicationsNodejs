@@ -34,16 +34,22 @@ block scripts
             errorClass: "text-danger",
             errorElement: "span",
             rules: {
+                username: {
+                    pattern: /^[\w@%\.]+$/
+                },
                 password: {
-                    pattern: /^\w{4,20}$/
+                    pattern: /^\w+$/
                 },
                 "confirm-password": {
                     equalTo: "#password"
                 }
             },
             messages: {
+                username: {
+                    pattern: 'Allowed characters: a-zA-Z0-9_@%.'
+                },
                 password: {
-                    pattern: "Allowed are letters (A-Z, a-z), numbers (0-9) and _"
+                    pattern: "Allowed characters: a-zA-Z0-9_"
                 },
                 "confirm-password": {
                     equalTo: "Content does not match the Password field."

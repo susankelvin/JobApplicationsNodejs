@@ -1,14 +1,21 @@
 'use strict';
 
+var USERNAME_MIN_LENGTH = 4;
+var USERNAME_MAX_LENGTH = 20;
+var USERNAME_PATTERN = /^[\w@%\.]+$/;
+var PASSWORD_MIN_LENGTH = 4;
+var PASSWORD_MAX_LENGTH = 20;
+var PASSWORD_PATTERN = /^\w+$/;
 var express = require('express');
 var router = express.Router();
 var passport = require('passport');
 var userManager = require('../data/userManager');
 var authentication = require('../middleware/authentication');
+var userModels = require('../view_models/users');
 
 // Register
 router.get('/register', function (req, res) {
-    res.render('users/register', getRegisterModel());
+    res.render('users/register', new userModels.Registration());
 });
 
 router.post('/register', function (req, res, next) {
@@ -21,23 +28,26 @@ router.post('/register', function (req, res, next) {
         username = req.body.username;
         password = req.body.password;
         confirmPassword = req.body['confirm-password'];
+        if (!usernameValid(username)) {
+            valid = false;
+            res.locals.errorMessage = 'Invalid username';
+        }
+        else if (!passwordValid(password)) {
+            valid = false;
+            res.locals.errorMessage = 'Invalid password';
+        }
+        else if (password !== confirmPassword) {
+            valid = false;
+            res.locals.errorMessage = 'Passwords do not match.';
+        }
     }
-
-    if ((!username) || (username.length < 4) || (username.length > 20)) {
+    else {
         valid = false;
-        res.locals.errorMessage = 'Invalid username';
-    }
-    else if ((!password) || (password.length < 4) || (password.length > 20)) {
-        valid = false;
-        res.locals.errorMessage = 'Invalid password';
-    }
-    else if (password !== confirmPassword) {
-        valid = false;
-        res.locals.errorMessage = 'Passwords do not match.';
+        res.locals.errorMessage = 'Invalid registration details';
     }
 
     if (!valid) {
-        return res.status(400).render('users/register', getRegisterModel(username));
+        return res.status(400).render('users/register', new userModels.Registration(username));
     }
 
     userManager.findByName(username, function (err, user) {
@@ -46,7 +56,7 @@ router.post('/register', function (req, res, next) {
         }
         else if (user) {
             res.locals.errorMessage = 'Username is already taken.';
-            res.status(400).render('users/register', getRegisterModel(username));
+            res.status(400).render('users/register', new userModels.Registration(username));
         }
         else {
             userManager.register(username, password, function (err, user) {
@@ -63,23 +73,26 @@ router.post('/register', function (req, res, next) {
                     });
                 }
                 else {
-                    res.status(400).redirect('/users/register', getRegisterModel(username));
+                    res.status(400).redirect('/users/register', new userModels.Registration(username));
                 }
             });
         }
     });
 });
 
-function getRegisterModel(username) {
-    return {
-        title: 'Register',
-        username: username || ''
-    };
+function usernameValid(username) {
+    return username && (username.length >= USERNAME_MIN_LENGTH) && (username.length <= USERNAME_MAX_LENGTH) &&
+        USERNAME_PATTERN.test(username);
+}
+
+function passwordValid(password) {
+    return password && (password.length >= PASSWORD_MIN_LENGTH) && (password.length <= PASSWORD_MAX_LENGTH) &&
+        PASSWORD_PATTERN.test(password);
 }
 
 // Login
 router.get('/login', function (req, res) {
-    res.render('users/login', getLoginModel());
+    res.render('users/login', new userModels.Login());
 });
 
 router.post('/login', function (req, res, next) {
@@ -93,7 +106,7 @@ router.post('/login', function (req, res, next) {
         if (!user) {
             res.locals.errorMessage = 'Invalid username or password.';
             username = req.body ? req.body.username : '';
-            return res.render('users/login', getLoginModel(username));
+            return res.render('users/login', new userModels.Login(username));
         }
 
         req.logIn(user, function (err) {
@@ -105,13 +118,6 @@ router.post('/login', function (req, res, next) {
         });
     })(req, res, next);
 });
-
-function getLoginModel(username) {
-    return {
-        title: 'Login',
-        username: username || ''
-    };
-}
 
 // Logout
 router.post('/logout', authentication.authorized, function (req, res) {
