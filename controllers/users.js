@@ -4,6 +4,7 @@ var express = require('express');
 var router = express.Router();
 var passport = require('passport');
 var userManager = require('../data/userManager');
+var authentication = require('../middleware/authentication');
 
 // Register
 router.get('/register', function (req, res) {
@@ -113,7 +114,7 @@ function getLoginModel(username) {
 }
 
 // Logout
-router.post('/logout', function (req, res) {
+router.post('/logout', authentication.authorized, function (req, res) {
     req.logout();
     res.redirect('/');
 });
