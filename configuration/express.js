@@ -5,7 +5,7 @@ function config(app) {
     var cookieParser = require('cookie-parser');
     var bodyParser = require('body-parser');
     var path = require('path');
-    var checkAuthenticated = require('../middleware/check-authentication.js');
+    var authentication = require('../middleware/authentication.js');
     var session = require('./session');
     var passport = require('./passport');
     var sessionMessage = require('../middleware/session-message');
@@ -20,7 +20,7 @@ function config(app) {
     app.use(cookieParser());
     session.config(app);
     passport.config(app);
-    app.use(checkAuthenticated);
+    authentication.config(app);
     app.use(sessionMessage);
 }
 
