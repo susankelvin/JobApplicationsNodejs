@@ -3,7 +3,7 @@
 function config(app) {
     // catch 404
     app.use(function (req, res, next) {
-        res.status(404).render('errors/404');
+        res.status(404).render('errors/404', {title: 'Not found'});
     });
 
     // error handlers

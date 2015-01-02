@@ -12,7 +12,7 @@ function authorized(req, res, next) {
         next();
     }
     else {
-        res.status(401).render('errors/401');
+        res.status(401).render('errors/401', {title: 'Not authorized'});
     }
 }
 

@@ -21,7 +21,7 @@ function validateToken(req, res, next) {
     else {
         req.logout();
         res.locals.isAuthenticated = false;
-        res.status(400).render('errors/400');
+        res.status(400).render('errors/400', {title: 'Bad request'});
     }
 }
 
