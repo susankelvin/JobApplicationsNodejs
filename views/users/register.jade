@@ -4,6 +4,7 @@ block content
     h1 Register
     br
     form.form-horizontal(action="/users/register", method="post", role="form")
+        input.hidden(name="_RequestValidationToken", value="#{antiforgeryToken}")
         div.form-group
             label.control-label.col-md-2(for="username") Username
             div.col-md-10

@@ -7,6 +7,10 @@ function generateToken() {
     return uuid.v4();
 }
 
+/**
+ * Express middleware that verifies presence and correctness of antiforgery token.
+ * If validation fails it renders errors/400.
+ */
 function validateToken(req, res, next) {
     var formToken = req.body ? req.body[TOKEN_NAME] : '',
         sessionToken = req.session ? req.session[TOKEN_NAME] : '';
@@ -21,7 +25,24 @@ function validateToken(req, res, next) {
     }
 }
 
+function setSessionToken(req, token) {
+    req.session[TOKEN_NAME] = token;
+}
+
+/**
+ * Generates new antiforgery token and saves it to request session
+ * @param {Object} req Node request
+ * @returns {String} Antiforgery token
+ */
+function setup(req) {
+    var antiforgeryToken = generateToken();
+    setSessionToken(req, antiforgeryToken);
+    return antiforgeryToken;
+}
+
 module.exports = {
     generateToken: generateToken,
-    validateToken: validateToken
+    validateToken: validateToken,
+    setSessionToken: setSessionToken,
+    setup: setup
 };

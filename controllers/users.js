@@ -16,10 +16,10 @@ var antiforgery = require('../middleware/antiforgery');
 
 // Register
 router.get('/register', function (req, res) {
-    res.render('users/register', new userModels.Registration());
+    res.render('users/register', new userModels.Registration('', antiforgery.setup(req)));
 });
 
-router.post('/register', function (req, res, next) {
+router.post('/register', antiforgery.validateToken, function (req, res, next) {
     var username = '',
         password = '',
         confirmPassword = '',
@@ -48,7 +48,7 @@ router.post('/register', function (req, res, next) {
     }
 
     if (!valid) {
-        return res.status(400).render('users/register', new userModels.Registration(username));
+        return res.status(400).render('users/register', new userModels.Registration(username, antiforgery.setup(req)));
     }
 
     userManager.findByName(username, function (err, user) {
@@ -57,7 +57,7 @@ router.post('/register', function (req, res, next) {
         }
         else if (user) {
             res.locals.errorMessage = 'Username is already taken.';
-            res.status(400).render('users/register', new userModels.Registration(username));
+            res.status(400).render('users/register', new userModels.Registration(username, antiforgery.setup(req)));
         }
         else {
             userManager.register(username, password, function (err, user) {
@@ -74,7 +74,7 @@ router.post('/register', function (req, res, next) {
                     });
                 }
                 else {
-                    res.status(400).redirect('/users/register', new userModels.Registration(username));
+                    res.status(400).redirect('/users/register', new userModels.Registration(username, antiforgery.setup(req)));
                 }
             });
         }
@@ -93,10 +93,10 @@ function passwordValid(password) {
 
 // Login
 router.get('/login', function (req, res) {
-    res.render('users/login', new userModels.Login());
+    res.render('users/login', new userModels.Login('', antiforgery.setup(req)));
 });
 
-router.post('/login', function (req, res, next) {
+router.post('/login', antiforgery.validateToken, function (req, res, next) {
     passport.authenticate('local', function (err, user, info) {
         var username;
 
@@ -107,7 +107,7 @@ router.post('/login', function (req, res, next) {
         if (!user) {
             res.locals.errorMessage = 'Invalid username or password.';
             username = req.body ? req.body.username : '';
-            return res.render('users/login', new userModels.Login(username));
+            return res.render('users/login', new userModels.Login(username, antiforgery.setup(req)));
         }
 
         req.logIn(user, function (err) {
