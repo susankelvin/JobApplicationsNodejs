@@ -14,7 +14,7 @@ var applicationSchema = new Schema({
     companyUrl: String,
     contacts: String,
     offerDate: Date,
-    applicationDate: {type: Date, default: new Date(), required: true},
+    applicationDate: {type: Date, default: new Date()},
     notes: String,
     result: String
 });

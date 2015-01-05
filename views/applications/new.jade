@@ -1,18 +1,21 @@
 extends ../shared/layout
 
+block styles
+    link(rel="stylesheet", href="/stylesheets/jquery-ui.css")
+
 block content
     h1 New application
     br
-    form.form-horizontal(action="/applications/new", method="post", role="form")
+    form#newApplication.form-horizontal(action="/applications/new", method="post", role="form")
         input.hidden(name="_RequestValidationToken", value="#{antiforgeryToken}")
         div.form-group
             label.control-label.col-md-2(for="position") Position
             div.col-md-10
-                input#position.form-control(type="text", name="position", value="#{position}" placeholder="Position", required)
+                input#position.form-control(type="text", name="position", value="#{position}", placeholder="Position", required)
         div.form-group
             label.control-label.col-md-2(for="description") Description
             div.col-md-10
-                input#description.form-control(type="text", name="description", placeholder="Description", required)
+                textarea#description.form-control(name="description", placeholder="Description", rows="10", required)
         div.form-group
             label.control-label.col-md-2(for="company") Company
             div.col-md-10
@@ -22,7 +25,39 @@ block content
             div.col-md-10
                 input#refNo.form-control(type="text", name="refNo", placeholder="Ref. No")
         div.form-group
+            label.control-label.col-md-2(for="offerUrl") Offer url
+            div.col-md-10
+                input#offerUrl.form-control(type="url", name="offerUrl", placeholder="Offer url")
+        div.form-group
+            label.control-label.col-md-2(for="companyUrl") Company web site
+            div.col-md-10
+                input#companyUrl.form-control(type="url", name="companyUrl", placeholder="Company web site")
+        div.form-group
+            label.control-label.col-md-2(for="contacts") Contacts
+            div.col-md-10
+                input#contacts.form-control(type="text", name="contacts", placeholder="Contacts")
+        div.form-group
+            label.control-label.col-md-2(for="offerDate") Offer date
+            div.col-md-10
+                input#offerDate.form-control(type="text", name="offerDate", placeholder="Offer date")
+        div.form-group
+            label.control-label.col-md-2(for="notes") Notes
+            div.col-md-10
+                textarea#notes.form-control(name="notes", placeholder="Notes", rows="5")
+        div.form-group
             div.col-md-10.col-md-offset-2
                 button.btn.btn-primary(type="submit") Add
                 | &nbsp;
                 a.btn.btn-success(href="/") Cancel
+
+block scripts
+    script(src='/javascripts/jquery.validate.js')
+    script(src='/javascripts/jquery-ui.js')
+
+    script.
+        $('#offerDate').datepicker();
+
+        $('#newApplication').validate({
+            errorClass: 'text-danger',
+            errorElement: 'span'
+        });
