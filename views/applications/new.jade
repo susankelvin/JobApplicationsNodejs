@@ -1,0 +1,28 @@
+extends ../shared/layout
+
+block content
+    h1 New application
+    br
+    form.form-horizontal(action="/applications/new", method="post", role="form")
+        input.hidden(name="_RequestValidationToken", value="#{antiforgeryToken}")
+        div.form-group
+            label.control-label.col-md-2(for="position") Position
+            div.col-md-10
+                input#position.form-control(type="text", name="position", value="#{position}" placeholder="Position", required)
+        div.form-group
+            label.control-label.col-md-2(for="description") Description
+            div.col-md-10
+                input#description.form-control(type="text", name="description", placeholder="Description", required)
+        div.form-group
+            label.control-label.col-md-2(for="company") Company
+            div.col-md-10
+                input#company.form-control(type="text", name="company", placeholder="Company", required)
+        div.form-group
+            label.control-label.col-md-2(for="refNo") Ref. No
+            div.col-md-10
+                input#refNo.form-control(type="text", name="refNo", placeholder="Ref. No")
+        div.form-group
+            div.col-md-10.col-md-offset-2
+                button.btn.btn-primary(type="submit") Add
+                | &nbsp;
+                a.btn.btn-success(href="/") Cancel

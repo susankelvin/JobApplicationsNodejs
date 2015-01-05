@@ -115,7 +115,7 @@ router.post('/login', antiforgery.validateToken, function (req, res, next) {
                 return next(err);
             }
 
-            return res.redirect('/');
+            return res.redirect('/applications');
         });
     })(req, res, next);
 });

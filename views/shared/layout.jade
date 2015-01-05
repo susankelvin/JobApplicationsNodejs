@@ -17,10 +17,11 @@ html
                     a.navbar-brand(href="/") Job applications
                 div.collapse.navbar-collapse
                     ul.nav.navbar-nav
-                        li
-                            a(href="#") Link 1
-                        li
-                            a(href="#") Link 2
+                        if isAuthenticated
+                            li
+                                a(href="/applications") Applications
+                            li
+                                a(href="/applications/new") New
                     ul.nav.navbar-nav.navbar-right
                         if isAuthenticated
                             li
