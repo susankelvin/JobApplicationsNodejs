@@ -10,24 +10,40 @@ var applicationManager = require('../data/applicationsManager');
 
 // List applications
 router.get('/', authentication.authorized, function (req, res, next) {
-    applicationManager.index(req.user.id, function (err, results) {
+    var start = +req.query.page || 0;
+
+    applicationManager.index(req.user.id, start, PAGE_SIZE, function (err, result) {
         if (err) {
             next(err);
         }
         else {
-            res.render('applications/index', new applicationModels.Index(results, 0, getPageCount(results)));
+            res.render('applications/index',
+                new applicationModels.Index(result.applications, start, getPageCount(result.count)));
         }
     });
 });
 
-function getPageCount(applications) {
-    var result = (applications.length / PAGE_SIZE) | 0;
-    if (applications.length % PAGE_SIZE !== 0) {
+function getPageCount(totalCount) {
+    var result = (totalCount / PAGE_SIZE) | 0;
+    if (totalCount % PAGE_SIZE !== 0) {
         result++;
     }
 
     return result;
 }
+
+// Update applications
+router.get('/update', authentication.authorized, function (req, res, next) {
+    var start = +req.query.page || 0;
+
+    if (!req.xhr) {
+        req.logout();
+        res.locals.isAuthenticated = false;
+        return res.status(400).render('errors/400', {title: 'Bad request'});
+    }
+
+
+});
 
 // New application
 router.get('/new', authentication.authorized, function (req, res) {

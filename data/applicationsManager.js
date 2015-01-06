@@ -21,9 +21,34 @@ function add(model, callback) {
     application.save(callback);
 }
 
-// callback(err, applications)
-function index(userId, callback) {
-    Application.find({authorId: userId}, callback);
+/**
+ * Returns applications of the user with userId
+ * @param {String} userId user ID as string
+ * @param {Number} startIndex starting index
+ * @param {Number} count max number of documents to return
+ * @param {Function} callback function(err, Object{count, applications})
+ */
+function index(userId, startIndex, count, callback) {
+    var totalCount = 0;
+    Application.count({authorId: userId}, function (err, found) {
+        if (err) {
+            callback(err);
+        }
+        else {
+            totalCount = found;
+            Application.find({authorId: userId})
+                .skip(startIndex)
+                .limit(count)
+                .exec(function (err, results) {
+                    if (err) {
+                        callback(err);
+                    }
+                    else {
+                        callback(null, {count: totalCount, applications: results});
+                    }
+                });
+        }
+    });
 }
 
 module.exports = {

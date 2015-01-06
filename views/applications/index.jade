@@ -7,13 +7,13 @@ block content
     form.form-horizontal(role="form")
         div.form-group
             div.col-xs-6.col-sm-6.col-md-6.col-sm-offset-2.col-md-offset-2
-                input#search.form-control(placeholder="Search in position and company")
+                input#tbxSearch.form-control(name="search", placeholder="Search in position and company")
             div.col-xs-3.col-sm-3.col-md-2
-                button.btn.btn-primary.form-control(type="submit") Search
+                //button#btnSubmit.btn.btn-primary.form-control(type="submit") Search
+                a#btnSubmit.btn.btn-primary(href="/applications?search=") Search
         br
         div.form-group
-            //div.col-md-12
-            table.table-striped.table-bordered
+            table.table.table-striped.table-bordered
                 thead
                     th.col-md-3 Position
                     th.col-md-2 Company
@@ -28,7 +28,29 @@ block content
                             td= item.notes
         div.form-group.text-center
             ul.pagination
-                li
-                    a(href="#") 1
-                li
-                    a(href="#") 2
+                li(class= activePage === 0 ? "disabled" : "")
+                    a(href="/applications?page=0") &laquo;
+
+                - var PAGER_SIZE = 8;
+                - var displayPageCount = pageCount <= PAGER_SIZE ? pageCount : PAGER_SIZE;
+                - var start = 0
+                if displayPageCount === PAGER_SIZE
+                    - start = activePage - (PAGER_SIZE >> 1);
+                    if start < 0
+                        - start = 0
+                    else if start + PAGER_SIZE > pageCount
+                        - start = pageCount - PAGER_SIZE
+
+                - for (var i = 0; i < displayPageCount; i++)
+                    li(class= i === activePage ? "active" : "")
+                        a(href="/applications?page=" + i)= i + start + 1
+
+                li(class= activePage === pageCount - 1 ? "disabled" : "")
+                    a(href="/applications?page=" + (pageCount - 1)) &raquo;
+
+block scripts
+    script.
+        $('#btnSubmit').on('click', function (){
+            $(this).prop('href', '/applications?search=' + $('#tbxSearch').val());
+            return false;
+        });
