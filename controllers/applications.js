@@ -10,15 +10,13 @@ var applicationManager = require('../data/applicationsManager');
 
 // List applications
 router.get('/', authentication.authorized, function (req, res, next) {
-    var start = +req.query.page || 0;
-
-    applicationManager.index(req.user.id, start, PAGE_SIZE, function (err, result) {
+    filterApplications(req.user.id, '', 0, PAGE_SIZE, function (err, result) {
         if (err) {
             next(err);
         }
         else {
             res.render('applications/index',
-                new applicationModels.Index(result.applications, start, getPageCount(result.count)));
+                new applicationModels.Index(result.applications, 0, getPageCount(result.count)));
         }
     });
 });
@@ -32,9 +30,10 @@ function getPageCount(totalCount) {
     return result;
 }
 
-// Update applications
+// Update applications' table by AJAX get request
 router.get('/update', authentication.authorized, function (req, res, next) {
-    var start = +req.query.page || 0;
+    var start = +req.query.page || 0,
+        search = req.query.search || '';
 
     if (!req.xhr) {
         req.logout();
@@ -42,7 +41,15 @@ router.get('/update', authentication.authorized, function (req, res, next) {
         return res.status(400).render('errors/400', {title: 'Bad request'});
     }
 
-
+    filterApplications(req.user.id, search, start, PAGE_SIZE, function (err, result) {
+        if (err) {
+            next(err);
+        }
+        else {
+            res.render('applications/index',
+                new applicationModels.Index(result.applications, start, getPageCount(result.count)));
+        }
+    });
 });
 
 // New application
@@ -83,5 +90,17 @@ router.post('/new', authentication.authorized, antiforgery.validateToken, functi
     }
 
 });
+
+// Private functions
+function filterApplications(userId, search, start, count, callback) {
+    applicationManager.index(userId, search, start, count, function (err, result) {
+        if (err) {
+            callback(err);
+        }
+        else {
+            callback(null, result);
+        }
+    });
+}
 
 module.exports = router;

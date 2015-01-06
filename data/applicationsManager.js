@@ -24,21 +24,31 @@ function add(model, callback) {
 /**
  * Returns applications of the user with userId
  * @param {String} userId user ID as string
+ * @param {String} search string to be matched case-insensitively in position and company fields
  * @param {Number} startIndex starting index
  * @param {Number} count max number of documents to return
  * @param {Function} callback function(err, Object{count, applications})
  */
-function index(userId, startIndex, count, callback) {
-    var totalCount = 0;
+function index(userId, search, startIndex, count, callback) {
+    var totalCount = 0,
+        query,
+        pattern;
+
     Application.count({authorId: userId}, function (err, found) {
         if (err) {
             callback(err);
         }
         else {
             totalCount = found;
-            Application.find({authorId: userId})
-                .skip(startIndex)
+            query = Application.find({authorId: userId});
+            if (search) {
+                pattern = new RegExp(search, 'mgi');
+                query = query.or([{position: {$regex: pattern}}, {company: {$regex: pattern}}]);
+            }
+
+            query.skip(startIndex)
                 .limit(count)
+                .lean()
                 .exec(function (err, results) {
                     if (err) {
                         callback(err);
