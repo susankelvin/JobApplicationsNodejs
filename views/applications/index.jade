@@ -1,0 +1,34 @@
+extends ../shared/layout
+
+block content
+    h1 Job applications
+    br
+
+    form.form-horizontal(role="form")
+        div.form-group
+            div.col-xs-6.col-sm-6.col-md-6.col-sm-offset-2.col-md-offset-2
+                input#search.form-control(placeholder="Search in position and company")
+            div.col-xs-3.col-sm-3.col-md-2
+                button.btn.btn-primary.form-control(type="submit") Search
+        br
+        div.form-group
+            //div.col-md-12
+            table.table-striped.table-bordered
+                thead
+                    th.col-md-3 Position
+                    th.col-md-2 Company
+                    th.col-md-2 Apllied on
+                    th.col-md-5 Notes
+                tbody
+                    each item in applications
+                        tr
+                            td= item.position
+                            td= item.company
+                            td= item.applicationDate.toLocaleDateString()
+                            td= item.notes
+        div.form-group.text-center
+            ul.pagination
+                li
+                    a(href="#") 1
+                li
+                    a(href="#") 2

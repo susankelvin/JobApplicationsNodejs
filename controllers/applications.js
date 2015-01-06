@@ -1,5 +1,6 @@
 'use strict';
 
+var PAGE_SIZE = 10;
 var express = require('express');
 var router = express.Router();
 var authentication = require('../middleware/authentication');
@@ -9,8 +10,24 @@ var applicationManager = require('../data/applicationsManager');
 
 // List applications
 router.get('/', authentication.authorized, function (req, res, next) {
-    res.redirect('../');
+    applicationManager.index(req.user.id, function (err, results) {
+        if (err) {
+            next(err);
+        }
+        else {
+            res.render('applications/index', new applicationModels.Index(results, 0, getPageCount(results)));
+        }
+    });
 });
+
+function getPageCount(applications) {
+    var result = (applications.length / PAGE_SIZE) | 0;
+    if (applications.length % PAGE_SIZE !== 0) {
+        result++;
+    }
+
+    return result;
+}
 
 // New application
 router.get('/new', authentication.authorized, function (req, res) {
@@ -22,7 +39,7 @@ router.post('/new', authentication.authorized, antiforgery.validateToken, functi
         valid = true;
 
     if (req.body) {
-        application.author = req.user._id;
+        application.authorId = req.user.id;
         application.position = req.body.position;
         application.description = req.body.description;
         application.company = req.body.company;
@@ -35,7 +52,7 @@ router.post('/new', authentication.authorized, antiforgery.validateToken, functi
         application.notes = req.body.notes;
         application.result = req.body.result;
 
-        applicationManager.create(application, function (err, result) {
+        applicationManager.add(application, function (err, result) {
             if (err) {
                 next(err);
             }

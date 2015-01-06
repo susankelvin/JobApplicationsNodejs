@@ -22,6 +22,14 @@ function New(antiforgeryToken, values) {
 New.prototype = Object.create(Base.prototype);
 New.prototype.constructor = New;
 
+function Index(applications, activePage, pageCount) {
+    this.title = 'History';
+    this.applications = applications;
+    this.pageCount = pageCount;
+    this.activePage = activePage;
+}
+
 module.exports = {
-    New: New
+    New: New,
+    Index: Index
 };

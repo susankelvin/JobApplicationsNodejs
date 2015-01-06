@@ -3,10 +3,10 @@
 var Application = require('../models/Application');
 
 // callback(err, application)
-function create(model, callback) {
+function add(model, callback) {
     var application = new Application();
 
-    application.author = model.author;
+    application.authorId = model.authorId;
     application.position = model.position;
     application.description = model.description;
     application.company = model.company;
@@ -21,6 +21,12 @@ function create(model, callback) {
     application.save(callback);
 }
 
+// callback(err, applications)
+function index(userId, callback) {
+    Application.find({authorId: userId}, callback);
+}
+
 module.exports = {
-    create: create
+    add: add,
+    index: index
 };

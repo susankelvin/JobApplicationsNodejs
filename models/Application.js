@@ -5,7 +5,7 @@ var Schema = mongoose.Schema;
 var Types = Schema.Types;
 
 var applicationSchema = new Schema({
-    author: {type: Types.ObjectId, ref: 'User', required: true},
+    authorId: {type: String, ref: 'User', required: true},
     position: {type: String, required: true},
     description: {type: String, required: true},
     company: {type: String, required: true},
