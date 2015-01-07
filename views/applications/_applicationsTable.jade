@@ -1,4 +1,4 @@
-div.form-group
+div.row
     table.table.table-striped.table-bordered
         thead
             th.col-md-3 Position
@@ -6,31 +6,39 @@ div.form-group
             th.col-md-2 Apllied on
             th.col-md-5 Notes
         tbody
-            each item in applications
+            if applications.length > 0
+                each item in applications
+                    tr
+                        td= item.position
+                        td= item.company
+                        td= item.applicationDate.toLocaleDateString()
+                        td= item.notes
+            else
                 tr
-                    td= item.position
-                    td= item.company
-                    td= item.applicationDate.toLocaleDateString()
-                    td= item.notes
-                    
-div.form-group.text-center
-    ul.pagination
-        li(class= activePage === 0 ? "disabled" : "")
-            a(href="/applications?page=0") &laquo;
+                    td.text-center(colspan="4") No items
 
-        - var PAGER_SIZE = 8;
-        - var displayPageCount = pageCount <= PAGER_SIZE ? pageCount : PAGER_SIZE;
-        - var start = 0
-        if displayPageCount === PAGER_SIZE
-            - start = activePage - (PAGER_SIZE >> 1);
-            if start < 0
-                - start = 0
-            else if start + PAGER_SIZE > pageCount
-                - start = pageCount - PAGER_SIZE
-        - for (var i = 0; i < displayPageCount; i++)
-            li(class= i === activePage ? "active" : "")
-                a(href="/applications?page=" + i)= i + start + 1
+if applications.length > 0
+    div.row.text-center
+        ul.pagination
+            li(class= activePage === 0 ? "disabled" : "")
+                a(href="#", data-page="0") &laquo;
+            li(class= activePage === 0 ? "disabled" : "")
+                a(href="#", data-page= "" + (activePage > 0 ? activePage - 1 : 0)) &lsaquo;
 
-        li(class= activePage === pageCount - 1 ? "disabled" : "")
-            a(href="/applications?page=" + (pageCount - 1)) &raquo;
+            - var PAGER_SIZE = 8;
+            - var displayPageCount = pageCount <= PAGER_SIZE ? pageCount : PAGER_SIZE;
+            - var start = 0
+            if displayPageCount === PAGER_SIZE
+                - start = activePage - (PAGER_SIZE >> 1);
+                if start < 0
+                    - start = 0
+                else if start + PAGER_SIZE > pageCount
+                    - start = pageCount - PAGER_SIZE
+            - for (var i = 0; i < displayPageCount; i++)
+                li(class= i === activePage ? "active" : "")
+                    a(href="#", data-page="#{i}")= i + start + 1
 
+            li(class= activePage === pageCount - 1 ? "disabled" : "")
+                a(href="#", data-page= "" + (activePage < pageCount - 1 ? activePage + 1 : pageCount - 1)) &rsaquo;
+            li(class= activePage === pageCount - 1 ? "disabled" : "")
+                a(href="#", data-page= "" + (pageCount - 1)) &raquo;

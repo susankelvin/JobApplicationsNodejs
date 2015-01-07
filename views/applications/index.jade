@@ -4,19 +4,38 @@ block content
     h1 Job applications
     br
 
-    form.form-horizontal(role="form")
-        div.form-group
-            div.col-xs-6.col-sm-6.col-md-6.col-sm-offset-2.col-md-offset-2
-                input#tbxSearch.form-control(name="search", placeholder="Search in position and company")
-            div.col-xs-3.col-sm-3.col-md-2
-                //button#btnSubmit.btn.btn-primary.form-control(type="submit") Search
-                a#btnSubmit.btn.btn-primary(href="/applications?search=") Search
-        br
-        include ./_applicationsTable.jade
+    div.row
+        input#tbxPage(type="hidden", name="page", value="0")
+        div.col-xs-6.col-sm-6.col-md-6.col-sm-offset-2.col-md-offset-2
+            input#tbxSearch.form-control(name="search", placeholder="Search in position and company")
+        div.col-xs-3.col-sm-3.col-md-2
+            button#btnSearch.btn.btn-primary Search
+    br
+
+    div#table
+        include _applicationsTable
 
 block scripts
     script.
-        $('#btnSubmit').on('click', function () {
-            $(this).prop('href', '/applications?search=' + $('#tbxSearch').val());
+        $('#btnSearch').on('click', function () {
+            $('#tbxPage').val(0);
+            update();
             return false;
         });
+
+        $('#table').on('click', 'ul.pagination a', function () {
+            $('#tbxPage').val($(this).data('page'));
+            update();
+            return false;
+        });
+
+        function update() {
+            var query = $('#tbxPage, #tbxSearch').serialize();
+
+            $.get('/applications/update?', query, function (data) {
+                $('#table').html(data);
+            })
+                    .fail(function () {
+                        $('#table').html('<div class="alert alert-danger">Failed to load content</div>');
+                    });
+        }

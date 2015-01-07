@@ -34,7 +34,13 @@ function index(userId, search, startIndex, count, callback) {
         query,
         pattern;
 
-    Application.count({authorId: userId}, function (err, found) {
+    query = Application.find({authorId: userId});
+    if (search) {
+        pattern = new RegExp(search, 'mgi');
+        query = query.or([{position: {$regex: pattern}}, {company: {$regex: pattern}}]);
+    }
+
+    query.count(function (err, found) {
         if (err) {
             callback(err);
         }

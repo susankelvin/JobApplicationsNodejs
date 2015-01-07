@@ -1,6 +1,6 @@
 'use strict';
 
-var PAGE_SIZE = 10;
+var PAGE_SIZE = 2;
 var express = require('express');
 var router = express.Router();
 var authentication = require('../middleware/authentication');
@@ -21,15 +21,6 @@ router.get('/', authentication.authorized, function (req, res, next) {
     });
 });
 
-function getPageCount(totalCount) {
-    var result = (totalCount / PAGE_SIZE) | 0;
-    if (totalCount % PAGE_SIZE !== 0) {
-        result++;
-    }
-
-    return result;
-}
-
 // Update applications' table by AJAX get request
 router.get('/update', authentication.authorized, function (req, res, next) {
     var start = +req.query.page || 0,
@@ -41,13 +32,21 @@ router.get('/update', authentication.authorized, function (req, res, next) {
         return res.status(400).render('errors/400', {title: 'Bad request'});
     }
 
-    filterApplications(req.user.id, search, start, PAGE_SIZE, function (err, result) {
+    filterApplications(req.user.id, search, start * PAGE_SIZE, PAGE_SIZE, function (err, result) {
         if (err) {
-            next(err);
+            res.status(400).end();
         }
         else {
-            res.render('applications/index',
-                new applicationModels.Index(result.applications, start, getPageCount(result.count)));
+            res.render('applications/_applicationsTable',
+                new applicationModels.Index(result.applications, start, getPageCount(result.count)),
+                function (err, html) {
+                    if (err) {
+                        res.status(400).end();
+                    }
+                    else {
+                        res.send(html);
+                    }
+                });
         }
     });
 });
@@ -92,6 +91,16 @@ router.post('/new', authentication.authorized, antiforgery.validateToken, functi
 });
 
 // Private functions
+function getPageCount(totalCount) {
+    var result = (totalCount / PAGE_SIZE) | 0;
+    if (totalCount % PAGE_SIZE !== 0) {
+        result++;
+    }
+
+    console.log(result);
+    return result;
+}
+
 function filterApplications(userId, search, start, count, callback) {
     applicationManager.index(userId, search, start, count, function (err, result) {
         if (err) {
