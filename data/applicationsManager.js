@@ -74,7 +74,6 @@ function index(userId, search, startIndex, count, callback) {
  * @param {Function} callback callback(err, application)
  */
 function details(applicationId, callback) {
-    console.log('manager: ' + applicationId);
     Application.findById(applicationId)
         .lean()
         .select('-__v')

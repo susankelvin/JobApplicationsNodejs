@@ -92,16 +92,18 @@ router.post('/new', authentication.authorized, antiforgery.validateToken, functi
 });
 
 // Details
-router.get('/:id', authentication.authorized, function (req, res, next){
+router.get('/:id', authentication.authorized, function (req, res, next) {
     var id = req.params.id;
-    console.log('controller: ' + id);
-    applicationManager.details(id, function(err, application){
+    applicationManager.details(id, function (err, application) {
         if (err) {
             next(err);
         }
-        else if (application) {
-            console.log(application);
+        else if (application && (application.authorId === req.user.id)) {
             res.render('applications/details', new applicationModels.Details(application));
+        }
+        else {
+            req.session.errorMessage = 'Invalid application id';
+            res.redirect('/applications');
         }
     });
 });
