@@ -1,5 +1,6 @@
 'use strict';
 
+var DEFAULT_SORT = '-applicationDate';
 var Application = require('../models/Application');
 
 // callback(err, application)
@@ -40,20 +41,20 @@ function index(userId, search, startIndex, count, callback) {
         query = query.or([{position: {$regex: pattern}}, {company: {$regex: pattern}}]);
     }
 
-    query.count(function (err, found) {
+    query.count(function (err, foundCount) {
         if (err) {
             callback(err);
         }
         else {
-            totalCount = found;
+            totalCount = foundCount;
             query = Application.find({authorId: userId});
             if (search) {
-                pattern = new RegExp(search, 'mgi');
                 query = query.or([{position: {$regex: pattern}}, {company: {$regex: pattern}}]);
             }
 
             query.skip(startIndex)
                 .limit(count)
+                .sort(DEFAULT_SORT)
                 .lean()
                 .exec(function (err, results) {
                     if (err) {

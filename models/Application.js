@@ -2,7 +2,6 @@
 
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
-var Types = Schema.Types;
 
 var applicationSchema = new Schema({
     authorId: {type: String, ref: 'User', required: true},

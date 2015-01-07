@@ -9,7 +9,8 @@ div.row
             if applications.length > 0
                 each item in applications
                     tr
-                        td= item.position
+                        td
+                            a(href="/applications/" + item._id, title="Details")= item.position
                         td= item.company
                         td= item.applicationDate.toLocaleDateString()
                         td= item.notes
@@ -21,9 +22,9 @@ if applications.length > 0
     div.row.text-center
         ul.pagination
             li(class= activePage === 0 ? "disabled" : "")
-                a(href="#", data-page="0") &laquo;
+                a(href="#", data-page="0", title="First") &laquo;
             li(class= activePage === 0 ? "disabled" : "")
-                a(href="#", data-page= "" + (activePage > 0 ? activePage - 1 : 0)) &lsaquo;
+                a(href="#", data-page= "" + (activePage > 0 ? activePage - 1 : 0), title="Previous") &lsaquo;
 
             - var PAGER_SIZE = 8;
             - var displayPageCount = pageCount <= PAGER_SIZE ? pageCount : PAGER_SIZE;
@@ -36,9 +37,9 @@ if applications.length > 0
                     - start = pageCount - PAGER_SIZE
             - for (var i = 0; i < displayPageCount; i++)
                 li(class= i === activePage ? "active" : "")
-                    a(href="#", data-page="#{i}")= i + start + 1
+                    a(href="#", data-page="#{i}", title="page " + (i + 1))= i + start + 1
 
             li(class= activePage === pageCount - 1 ? "disabled" : "")
-                a(href="#", data-page= "" + (activePage < pageCount - 1 ? activePage + 1 : pageCount - 1)) &rsaquo;
+                a(href="#", data-page= "" + (activePage < pageCount - 1 ? activePage + 1 : pageCount - 1), title="Next") &rsaquo;
             li(class= activePage === pageCount - 1 ? "disabled" : "")
-                a(href="#", data-page= "" + (pageCount - 1)) &raquo;
+                a(href="#", data-page= "" + (pageCount - 1), title="Last") &raquo;

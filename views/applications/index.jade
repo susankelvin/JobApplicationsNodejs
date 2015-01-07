@@ -31,7 +31,6 @@ block scripts
 
         function update() {
             var query = $('#tbxPage, #tbxSearch').serialize();
-
             $.get('/applications/update?', query, function (data) {
                 $('#table').html(data);
             })

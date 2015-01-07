@@ -97,7 +97,6 @@ function getPageCount(totalCount) {
         result++;
     }
 
-    console.log(result);
     return result;
 }
 
