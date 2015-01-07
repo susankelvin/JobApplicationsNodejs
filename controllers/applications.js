@@ -7,6 +7,7 @@ var authentication = require('../middleware/authentication');
 var antiforgery = require('../middleware/antiforgery');
 var applicationModels = require('../view_models/applications');
 var applicationManager = require('../data/applicationsManager');
+//var locale = require('locale');
 
 // List applications
 router.get('/', authentication.authorized, function (req, res, next) {
@@ -88,6 +89,21 @@ router.post('/new', authentication.authorized, antiforgery.validateToken, functi
         res.status(400).render('applications/new', new applicationModels.New(antiforgery.setup(req)));
     }
 
+});
+
+// Details
+router.get('/:id', authentication.authorized, function (req, res, next){
+    var id = req.params.id;
+    console.log('controller: ' + id);
+    applicationManager.details(id, function(err, application){
+        if (err) {
+            next(err);
+        }
+        else if (application) {
+            console.log(application);
+            res.render('applications/details', new applicationModels.Details(application));
+        }
+    });
 });
 
 // Private functions

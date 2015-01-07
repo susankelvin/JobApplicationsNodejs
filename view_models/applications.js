@@ -29,7 +29,17 @@ function Index(applications, activePage, pageCount) {
     this.activePage = activePage;
 }
 
+function Details(values) {
+    Base.call(this, 'Details', values);
+    this.applicationDate = values.applicationDate;
+    this.result = values.result;
+}
+
+Details.prototype = Object.create(Base.prototype);
+Details.prototype.constructor = Details;
+
 module.exports = {
     New: New,
-    Index: Index
+    Index: Index,
+    Details: Details
 };

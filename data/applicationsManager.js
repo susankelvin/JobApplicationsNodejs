@@ -68,7 +68,21 @@ function index(userId, search, startIndex, count, callback) {
     });
 }
 
+/**
+ * Get application by id
+ * @param {String} applicationId application ID as string
+ * @param {Function} callback callback(err, application)
+ */
+function details(applicationId, callback) {
+    console.log('manager: ' + applicationId);
+    Application.findById(applicationId)
+        .lean()
+        .select('-__v')
+        .exec(callback);
+}
+
 module.exports = {
     add: add,
-    index: index
+    index: index,
+    details: details
 };
