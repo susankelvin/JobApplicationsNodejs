@@ -23,7 +23,7 @@ router.get('/', authentication.authorized, function (req, res, next) {
         else {
             for (var i = 0; i < result.applications.length; i++) {
                 date = moment(result.applications[i].applicationDate);
-                date.locale(language[0].normalized);
+                date.locale(language);
                 result.applications[i].applicationDate = date.format('LL');
             }
 

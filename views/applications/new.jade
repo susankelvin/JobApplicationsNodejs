@@ -53,9 +53,34 @@ block content
 block scripts
     script(src='/javascripts/jquery.validate.js')
     script(src='/javascripts/jquery-ui.js')
+    script(src="/javascripts/moment-with-locales.js")
 
     script.
-        $('#offerDate').datepicker();
+        $('#offerDate').datepicker({
+            firstDay: 1,
+            showWeek: true,
+            onSelect: function (dateText, inst) {
+                var date;
+
+                //- Use default date picker format: http://api.jqueryui.com/datepicker/#option-dateFormat
+                date = moment(dateText, 'MM/DD/YYYY');
+                date.locale('bg');
+                $(this).val(date.format('LL'));
+            },
+            beforeShow: function (input, inst) {
+                var date = $(input).val(),
+                        isoDate,
+                        result = {};
+
+                if (date) {
+                    moment.locale('bg');
+                    isoDate = moment(date, 'LL').format('MM/DD/YYYY');
+                    result.defaultDate = isoDate;
+                }
+
+                return result;
+            }
+        });
 
         $('#newApplication').validate({
             errorClass: 'text-danger',
