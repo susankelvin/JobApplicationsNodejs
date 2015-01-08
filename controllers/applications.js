@@ -7,15 +7,26 @@ var authentication = require('../middleware/authentication');
 var antiforgery = require('../middleware/antiforgery');
 var applicationModels = require('../view_models/applications');
 var applicationManager = require('../data/applicationsManager');
-//var locale = require('locale');
+var locale = require('locale');
+var moment = require('moment');
 
 // List applications
 router.get('/', authentication.authorized, function (req, res, next) {
+    var languageList = new locale.Locales(req.get('Accept-Language')),
+        language = languageList[0] ? languageList[0].normalized : 'en',
+        date;
+
     filterApplications(req.user.id, '', 0, PAGE_SIZE, function (err, result) {
         if (err) {
             next(err);
         }
         else {
+            for (var i = 0; i < result.applications.length; i++) {
+                date = moment(result.applications[i].applicationDate);
+                date.locale(language[0].normalized);
+                result.applications[i].applicationDate = date.format('LL');
+            }
+
             res.render('applications/index',
                 new applicationModels.Index(result.applications, 0, getPageCount(result.count)));
         }

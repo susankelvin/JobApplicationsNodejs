@@ -12,7 +12,7 @@ div.row
                         td
                             a(href="/applications/" + item._id, title="Details")= item.position
                         td= item.company
-                        td= item.applicationDate.toLocaleDateString()
+                        td= item.applicationDate
                         td= item.notes
             else
                 tr
