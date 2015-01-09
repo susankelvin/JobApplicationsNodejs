@@ -13,9 +13,14 @@ var moment = require('moment');
 // List applications
 router.get('/', authentication.authorized, function (req, res, next) {
     var languageList = new locale.Locales(req.get('Accept-Language')),
-        language = languageList[0] ? languageList[0].normalized : 'en',
-        date;
+        language = languageList && languageList[0] ? languageList[0].code : 'en',
+        date,
+        localeData,
+        dateFormat;
 
+    localeData = moment.localeData(language);
+    dateFormat = localeData.longDateFormat('LL');
+    res.locals.dateFormat = dateFormat;
     filterApplications(req.user.id, '', 0, PAGE_SIZE, function (err, result) {
         if (err) {
             next(err);
@@ -23,8 +28,7 @@ router.get('/', authentication.authorized, function (req, res, next) {
         else {
             for (var i = 0; i < result.applications.length; i++) {
                 date = moment(result.applications[i].applicationDate);
-                date.locale(language);
-                result.applications[i].applicationDate = date.format('LL');
+                result.applications[i].applicationDate = date.format(dateFormat);
             }
 
             res.render('applications/index',
@@ -65,6 +69,14 @@ router.get('/update', authentication.authorized, function (req, res, next) {
 
 // New application
 router.get('/new', authentication.authorized, function (req, res) {
+    var languageList = new locale.Locales(req.get('Accept-Language')),
+        language = languageList && languageList[0] ? languageList[0].code : 'en',
+        localeData,
+        dateFormat;
+
+    localeData = moment.localeData(language);
+    dateFormat = localeData.longDateFormat('LL');
+    res.locals.dateFormat = dateFormat;
     res.render('applications/new', new applicationModels.New(antiforgery.setup(req)));
 });
 
