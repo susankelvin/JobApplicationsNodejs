@@ -64,7 +64,7 @@ block scripts
 
                 //- Use default date picker format: http://api.jqueryui.com/datepicker/#option-dateFormat
                 date = moment(dateText, 'MM/DD/YYYY');
-                $(this).val(date.format('#{dateFormat}'));
+                $(this).val(date.format('#{locale.longDateFormat}'));
             },
             beforeShow: function (input, inst) {
                 var date = $(input).val(),
@@ -72,7 +72,7 @@ block scripts
                         result = {};
 
                 if (date) {
-                    isoDate = moment(date, '#{dateFormat}').format('MM/DD/YYYY');
+                    isoDate = moment(date, '#{locale.longDateFormat}').format('MM/DD/YYYY');
                     result.defaultDate = isoDate;
                 }
 

@@ -81,37 +81,36 @@ router.get('/new', authentication.authorized, function (req, res) {
 });
 
 router.post('/new', authentication.authorized, antiforgery.validateToken, function (req, res, next) {
-    var application = {},
-        valid = true;
+    var application = {};
 
-    if (req.body) {
-        application.authorId = req.user.id;
-        application.position = req.body.position;
-        application.description = req.body.description;
-        application.company = req.body.company;
-        application.refNo = req.body.refNo;
-        application.offerUrl = req.body.offerUrl;
-        application.companyUrl = req.body.companyUrl;
-        application.contacts = req.body.contacts;
-        application.offerDate = new Date(req.body.offerDate);
-        application.applicationDate = new Date();
-        application.notes = req.body.notes;
-        application.result = req.body.result;
+    application.authorId = req.user.id;
+    application.position = req.body.position;
+    application.description = req.body.description;
+    application.company = req.body.company;
 
-        applicationManager.add(application, function (err, result) {
-            if (err) {
-                next(err);
-            }
-            else {
-                res.redirect('/applications');
-            }
-        });
-    }
-    else {
-        res.locals.errorMessage = 'Invalid application details';
+    if (!(application.position && application.description && application.company)) {
+        res.locals.errorMessage = 'Required information is missing';
         res.status(400).render('applications/new', new applicationModels.New(antiforgery.setup(req)));
+        return;
     }
 
+    application.refNo = req.body.refNo;
+    application.offerUrl = req.body.offerUrl;
+    application.companyUrl = req.body.companyUrl;
+    application.contacts = req.body.contacts;
+    application.offerDate = new Date(req.body.offerDate);
+    application.applicationDate = new Date();
+    application.notes = req.body.notes;
+    application.result = req.body.result;
+
+    applicationManager.add(application, function (err, result) {
+        if (err) {
+            next(err);
+        }
+        else {
+            res.redirect('/applications');
+        }
+    });
 });
 
 // Details
