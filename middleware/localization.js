@@ -12,10 +12,10 @@ var locale = require('locale');
 var moment = require('moment');
 
 function config(app) {
-    app.use(setLocalizationInformation);
+    app.use(localization);
 }
 
-function setLocalizationInformation(req, res, next){
+function localization(req, res, next){
     var languageList = new locale.Locales(req.get('Accept-Language')),
         language = languageList && languageList[0] ? languageList[0].code : DEFAULT_CULTURE,
         localeData;

@@ -19,10 +19,11 @@ function config(app) {
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({extended: false}));
     app.use(cookieParser());
+
     session.config(app);
     passport.config(app);
     authentication.config(app);
-    app.use(sessionMessage);
+    sessionMessage.config(app);
     localization.config(app);
 }
 
