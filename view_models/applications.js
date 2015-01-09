@@ -1,8 +1,11 @@
 'use strict';
 
-function Base(title, values) {
+var dateHelpers = require('../utilities/dateHelpers');
+
+function Base(title, values, dateFormat) {
     this.title = title || '';
     values = values || {};
+    this._id = values._id;
     this.position = values.position || '';
     this.description = values.description || '';
     this.company = values.company || '';
@@ -10,28 +13,31 @@ function Base(title, values) {
     this.offerUrl = values.offerUrl || '';
     this.companyUrl = values.companyUrl || '';
     this.contacts = values.contacts || '';
-    this.offerDate = values.offerDate || '';
+    this.offerDate = values.offerDate ? dateHelpers.toLocalLongDate(values.offerDate, dateFormat) : '';
     this.notes = values.notes || '';
 }
 
-function New(antiforgeryToken, values) {
-    Base.call(this, 'New', values);
+function New(antiforgeryToken, values, dateFormat) {
+    Base.call(this, 'New', values, dateFormat);
     this.antiforgeryToken = antiforgeryToken || '';
 }
 
 New.prototype = Object.create(Base.prototype);
 New.prototype.constructor = New;
 
-function Index(applications, activePage, pageCount) {
+function Index(applications, activePage, pageCount, dateFormat) {
     this.title = 'History';
-    this.applications = applications;
+    this.applications = applications.map(function (item) {
+        return new Details(item, dateFormat);
+    });
     this.pageCount = pageCount;
     this.activePage = activePage;
 }
 
-function Details(values) {
-    Base.call(this, 'Details', values);
-    this.applicationDate = values.applicationDate;
+function Details(values, dateFormat) {
+    Base.call(this, 'Details', values, dateFormat);
+    this.applicationDate =
+        values.applicationDate ? dateHelpers.toLocalLongDate(values.applicationDate, dateFormat) : '';
     this.result = values.result;
 }
 

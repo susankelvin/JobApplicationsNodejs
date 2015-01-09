@@ -7,32 +7,17 @@ var authentication = require('../middleware/authentication');
 var antiforgery = require('../middleware/antiforgery');
 var applicationModels = require('../view_models/applications');
 var applicationManager = require('../data/applicationsManager');
-var locale = require('locale');
-var moment = require('moment');
 
 // List applications
 router.get('/', authentication.authorized, function (req, res, next) {
-    var languageList = new locale.Locales(req.get('Accept-Language')),
-        language = languageList && languageList[0] ? languageList[0].code : 'en',
-        date,
-        localeData,
-        dateFormat;
-
-    localeData = moment.localeData(language);
-    dateFormat = localeData.longDateFormat('LL');
-    res.locals.dateFormat = dateFormat;
     filterApplications(req.user.id, '', 0, PAGE_SIZE, function (err, result) {
         if (err) {
             next(err);
         }
         else {
-            for (var i = 0; i < result.applications.length; i++) {
-                date = moment(result.applications[i].applicationDate);
-                result.applications[i].applicationDate = date.format(dateFormat);
-            }
-
             res.render('applications/index',
-                new applicationModels.Index(result.applications, 0, getPageCount(result.count)));
+                new applicationModels.Index(result.applications, 0, getPageCount(result.count),
+                    res.locals.locale.longDateFormat));
         }
     });
 });
@@ -54,7 +39,8 @@ router.get('/update', authentication.authorized, function (req, res, next) {
         }
         else {
             res.render('applications/_applicationsTable',
-                new applicationModels.Index(result.applications, start, getPageCount(result.count)),
+                new applicationModels.Index(result.applications, start, getPageCount(result.count),
+                    res.locals.locale.longDateFormat),
                 function (err, html) {
                     if (err) {
                         res.status(400).end();
@@ -69,14 +55,6 @@ router.get('/update', authentication.authorized, function (req, res, next) {
 
 // New application
 router.get('/new', authentication.authorized, function (req, res) {
-    var languageList = new locale.Locales(req.get('Accept-Language')),
-        language = languageList && languageList[0] ? languageList[0].code : 'en',
-        localeData,
-        dateFormat;
-
-    localeData = moment.localeData(language);
-    dateFormat = localeData.longDateFormat('LL');
-    res.locals.dateFormat = dateFormat;
     res.render('applications/new', new applicationModels.New(antiforgery.setup(req)));
 });
 
@@ -121,7 +99,8 @@ router.get('/:id', authentication.authorized, function (req, res, next) {
             next(err);
         }
         else if (application && (application.authorId === req.user.id)) {
-            res.render('applications/details', new applicationModels.Details(application));
+            res.render('applications/details',
+                new applicationModels.Details(application, res.locals.locale.longDateFormat));
         }
         else {
             req.session.errorMessage = 'Invalid application id';
