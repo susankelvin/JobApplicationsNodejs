@@ -9,6 +9,7 @@ function config(app) {
     var session = require('./session');
     var passport = require('./passport');
     var sessionMessage = require('../middleware/session-message');
+    var localization = require('../middleware/localization');
 
     // view engine setup
     app.set('views', path.join(path.dirname(__dirname), 'views'));
@@ -22,6 +23,7 @@ function config(app) {
     passport.config(app);
     authentication.config(app);
     app.use(sessionMessage);
+    localization.config(app);
 }
 
 module.exports = {
