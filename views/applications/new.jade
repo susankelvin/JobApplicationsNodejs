@@ -9,8 +9,9 @@ block styles
 block content
     h1 New application
     br
+
     form#newApplication.form-horizontal(action="/applications/new", method="post", role="form")
-        input.hidden(name="_RequestValidationToken", value="#{antiforgeryToken}")
+        input(type="hidden", name="_RequestValidationToken", value="#{antiforgeryToken}")
         div.form-group
             label.control-label.col-md-2(for="position") Position
             div.col-md-10

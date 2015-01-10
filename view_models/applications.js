@@ -42,8 +42,17 @@ function Details(values, dateFormat) {
 Details.prototype = Object.create(Base.prototype);
 Details.prototype.constructor = Details;
 
+function Edit(antiforgeryToken, values, dateFormat){
+    Details.call(this, values, dateFormat);
+    this.antiforgeryToken = antiforgeryToken || '';
+}
+
+Edit.prototype = Object.create(Details.prototype);
+Edit.prototype.constructor = Edit;
+
 module.exports = {
     New: New,
     Index: Index,
-    Details: Details
+    Details: Details,
+    Edit: Edit
 };

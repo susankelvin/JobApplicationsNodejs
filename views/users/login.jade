@@ -7,7 +7,7 @@ block content
     h1 Login
     br
     form.form-horizontal(action="/users/login", method="post", role="form")
-        input.hidden(name="_RequestValidationToken", value="#{antiforgeryToken}")
+        input(type="hidden", name="_RequestValidationToken", value="#{antiforgeryToken}")
         div.form-group
             label.control-label.col-md-2(for="username") Username
             div.col-md-10

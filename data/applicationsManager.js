@@ -69,19 +69,34 @@ function index(userId, search, startIndex, count, callback) {
 }
 
 /**
- * Get application by id
- * @param {String} applicationId application ID as string
+ * Get application by id and author's id
+ * @param {String} userId author's id
+ * @param {String} applicationId application id as string
  * @param {Function} callback callback(err, application)
  */
-function details(applicationId, callback) {
-    Application.findById(applicationId)
+function details(userId, applicationId, callback) {
+    Application.findOne({_id: applicationId, authorId: userId})
         .lean()
         .select('-__v')
+        .exec(callback);
+}
+
+/**
+ * Update application by id and author's id
+ * @param {String} userId author's id
+ * @param {String} applicationId application id as string
+ * @param {Object} values new values
+ * @param {Function} callback function(err, applicationUpdated)
+ */
+function update(userId, applicationId, values, callback) {
+    Application.findOneAndUpdate({_id: applicationId, authorId: userId}, values)
+        .lean()
         .exec(callback);
 }
 
 module.exports = {
     add: add,
     index: index,
-    details: details
+    details: details,
+    update: update
 };

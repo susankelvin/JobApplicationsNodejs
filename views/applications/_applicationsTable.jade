@@ -4,19 +4,22 @@ div.row
             th.col-md-3 Position
             th.col-md-2 Company
             th.col-md-2 Apllied on
-            th.col-md-5 Notes
+            th.col-md-4 Notes
+            th.col-md-1 Action
         tbody
             if applications.length > 0
                 each item in applications
                     tr
                         td
-                            a(href="/applications/" + item._id, title="Details")= item.position
+                            a(href="/applications/details/" + item._id, title="Details")= item.position
                         td= item.company
                         td= item.applicationDate
                         td= item.notes
+                        td
+                            a(href="/applications/edit/" + item._id, title="Edit") Edit
             else
                 tr
-                    td.text-center(colspan="4") No items
+                    td.text-center(colspan="5") No items
 
 if applications.length > 0
     div.row.text-center

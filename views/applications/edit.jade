@@ -1,0 +1,105 @@
+extends ../shared/layout
+
+block title
+    title Application | Edit
+
+block styles
+    link(rel="stylesheet", href="/stylesheets/jquery-ui.css")
+
+block content
+    h1 Edit application
+    br
+
+    form#editApplication.form-horizontal(action="/applications/edit", method="post", role="form")
+        input(type="hidden", name="_RequestValidationToken", value="#{antiforgeryToken}")
+        input(type="hidden", name="_id", value="#{_id}")
+        div.form-group
+            label.control-label.col-md-2(for="position") Position
+            div.col-md-10
+                input#position.form-control(type="text", name="position", value="#{position}", placeholder="Position", required)
+        div.form-group
+            label.control-label.col-md-2(for="description") Description
+            div.col-md-10
+                textarea#description.form-control(name="description", placeholder="Description", rows="10", required)
+                    != description
+        div.form-group
+            label.control-label.col-md-2(for="company") Company
+            div.col-md-10
+                input#company.form-control(type="text", name="company", value="#{company}", placeholder="Company", required)
+        div.form-group
+            label.control-label.col-md-2(for="applicationDate") Application date
+            div.col-md-10
+                input#applicationDate.form-control(type="text", name="applicationDate", value="#{applicationDate}", placeholder="Application date")
+        div.form-group
+            label.control-label.col-md-2(for="notes") Notes
+            div.col-md-10
+                textarea#notes.form-control(name="notes", placeholder="Notes", rows="5")
+                    != notes
+        div.form-group
+            label.control-label.col-md-2(for="contacts") Contacts
+            div.col-md-10
+                input#contacts.form-control(type="text", name="contacts", value="#{contacts}", placeholder="Contacts")
+        div.form-group
+            label.control-label.col-md-2(for="refNo") Ref. No
+            div.col-md-10
+                input#refNo.form-control(type="text", name="refNo", value="#{refNo}", placeholder="Ref. No")
+        div.form-group
+            label.control-label.col-md-2(for="offerUrl") Offer url
+            div.col-md-10
+                input#offerUrl.form-control(type="url", name="offerUrl", value="#{offerUrl}", placeholder="Offer url")
+        div.form-group
+            label.control-label.col-md-2(for="companyUrl") Company web site
+            div.col-md-10
+                input#companyUrl.form-control(type="url", name="companyUrl", value="#{companyUrl}", placeholder="Company web site")
+        div.form-group
+            label.control-label.col-md-2(for="offerDate") Offer date
+            div.col-md-10
+                input#offerDate.form-control(type="text", name="offerDate", value="#{offerDate}", placeholder="Offer date")
+        div.form-group
+            label.control-label.col-md-2(for="result") Result
+            div.col-md-10
+                textarea#result.form-control(name="result", placeholder="Result", rows="5")
+                    != result
+        div.form-group
+            div.col-md-10.col-md-offset-2
+                button.btn.btn-primary(type="submit") Edit
+                | &nbsp;
+                a.btn.btn-success(href="/applications") Cancel
+
+block scripts
+    script(src='/javascripts/jquery.validate.js')
+    script(src='/javascripts/jquery-ui.js')
+    script(src="/javascripts/moment-with-locales.js")
+
+    script.
+        $('#offerDate, #applicationDate').datepicker({
+            firstDay: 1,
+            showWeek: true,
+            onSelect: onDatePickerSelect,
+            beforeShow: onDatePickerBeforeShow
+        });
+
+        function onDatePickerSelect(dateText, inst) {
+            var date;
+            //- Use default date picker format: http://api.jqueryui.com/datepicker/#option-dateFormat
+            date = moment(dateText, 'MM/DD/YYYY');
+            $(this).val(date.format('#{locale.longDateFormat}'));
+        }
+
+        function onDatePickerBeforeShow(input, inst) {
+            var date = $(input).val(),
+                    isoDate,
+                    result = {};
+
+            if (date) {
+                isoDate = moment(date, '#{locale.longDateFormat}').format('MM/DD/YYYY');
+                result.defaultDate = isoDate;
+            }
+
+            return result;
+        }
+
+        $('#editApplication').validate({
+            errorClass: 'text-danger',
+            errorElement: 'span'
+        });

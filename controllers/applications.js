@@ -63,21 +63,27 @@ router.post('/new', authentication.authorized, antiforgery.validateToken, functi
     var application = {};
 
     application.authorId = req.user.id;
-    application.position = req.body.position;
-    application.description = req.body.description;
-    application.company = req.body.company;
+    application.position = req.body.position.trim();
+    application.description = req.body.description.trim();
+    application.company = req.body.company.trim();
 
     if (!(application.position && application.description && application.company)) {
-        res.locals.errorMessage = 'Required information is missing';
-        res.status(400).render('applications/new', new applicationModels.New(antiforgery.setup(req)));
+        req.session.errorMessage = 'Required information is missing';
+        res.redirect('applications/new');
         return;
     }
 
+    if (req.body.offerDate) {
+        application.offerDate = dateHelpers.fromLocalLongDate(req.body.offerDate, res.locals.locale.longDateFormat);
+        req.session.errorMessage = 'Invalid offer date';
+        res.redirect('applications/new');
+        return;
+    }
+    
     application.refNo = req.body.refNo;
     application.offerUrl = req.body.offerUrl;
     application.companyUrl = req.body.companyUrl;
     application.contacts = req.body.contacts;
-    application.offerDate = dateHelpers.fromLocalLongDate(req.body.offerDate, res.locals.locale.longDateFormat);
     application.applicationDate = new Date();
     application.notes = req.body.notes;
     application.result = req.body.result;
@@ -92,19 +98,95 @@ router.post('/new', authentication.authorized, antiforgery.validateToken, functi
     });
 });
 
-// Details
-router.get('/:id', authentication.authorized, function (req, res, next) {
+// Edit
+router.get('/edit/:id', authentication.authorized, function (req, res, next) {
     var id = req.params.id;
-    applicationManager.details(id, function (err, application) {
+
+    applicationManager.details(req.user.id, id, function (err, application) {
         if (err) {
             next(err);
         }
-        else if (application && (application.authorId === req.user.id)) {
+        else if (application) {
+            res.render('applications/edit',
+                new applicationModels.Edit(antiforgery.setup(req), application, res.locals.locale.longDateFormat));
+        }
+        else {
+            req.session.errorMessage = 'Application not found';
+            res.redirect('/applications');
+        }
+    });
+});
+
+router.post('/edit', authentication.authorized, antiforgery.validateToken, function (req, res, next) {
+    var application = {};
+
+    if (!req.body._id) {
+        req.logout();
+        res.locals.isAuthenticated = false;
+        return res.status(400).render('errors/400');
+    }
+
+    application.position = req.body.position.trim();
+    application.description = req.body.description.trim();
+    application.company = req.body.company.trim();
+
+    if (!(application.position && application.description && application.company)) {
+        req.session.errorMessage = 'Required information is missing';
+        return res.redirect('/applications/edit/' + req.body._id);
+    }
+
+    if (req.body.applicationDate) {
+        application.applicationDate =
+            dateHelpers.fromLocalLongDate(req.body.applicationDate, res.locals.locale.longDateFormat);
+        if (!application.applicationDate) {
+            req.session.errorMessage = 'Invalid application date';
+            return res.redirect('/applications/edit/' + req.body._id);
+        }
+    }
+
+    if (req.body.offerDate) {
+        application.offerDate = dateHelpers.fromLocalLongDate(req.body.offerDate, res.locals.locale.longDateFormat);
+        if (!application.offerDate) {
+            req.session.errorMessage = 'Invalid offer date';
+            return res.redirect('/applications/edit/' + req.body._id);
+        }
+    }
+
+    application.refNo = req.body.refNo;
+    application.offerUrl = req.body.offerUrl;
+    application.companyUrl = req.body.companyUrl;
+    application.contacts = req.body.contacts;
+    application.notes = req.body.notes;
+    application.result = req.body.result;
+
+    applicationManager.update(req.user.id, req.body._id, application, function (err, result) {
+        if (err) {
+            next(err);
+        }
+        else {
+            if (!result) {
+                req.session.errorMessage = 'Application not found';
+            }
+
+            res.redirect('/applications');
+        }
+    });
+});
+
+// Details
+router.get('/details/:id', authentication.authorized, function (req, res, next) {
+    var id = req.params.id;
+
+    applicationManager.details(req.user.id, id, function (err, application) {
+        if (err) {
+            next(err);
+        }
+        else if (application) {
             res.render('applications/details',
                 new applicationModels.Details(application, res.locals.locale.longDateFormat));
         }
         else {
-            req.session.errorMessage = 'Invalid application';
+            req.session.errorMessage = 'Application not found';
             res.redirect('/applications');
         }
     });
