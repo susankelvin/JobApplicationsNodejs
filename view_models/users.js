@@ -1,20 +1,19 @@
 'use strict';
 
-function Base(username, title, antiforgeryToken) {
+function Base(username, antiforgeryToken) {
     this.username = username || '';
-    this.title = title || '';
     this.antiforgeryToken = antiforgeryToken || '';
 }
 
 function Registration(username, antiforgeryToken) {
-    Base.call(this, username, 'Register', antiforgeryToken);
+    Base.call(this, username, antiforgeryToken);
 }
 
 Registration.prototype = Object.create(Base.prototype);
 Registration.prototype.constructor = Registration;
 
 function Login(username, antiforgeryToken) {
-    Base.call(this, username, 'Login', antiforgeryToken);
+    Base.call(this, username, antiforgeryToken);
 }
 
 Login.prototype = Object.create(Base.prototype);

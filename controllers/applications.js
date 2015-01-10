@@ -7,6 +7,7 @@ var authentication = require('../middleware/authentication');
 var antiforgery = require('../middleware/antiforgery');
 var applicationModels = require('../view_models/applications');
 var applicationManager = require('../data/applicationsManager');
+var dateHelpers = require('../utilities/dateHelpers');
 
 // List applications
 router.get('/', authentication.authorized, function (req, res, next) {
@@ -30,7 +31,7 @@ router.get('/update', authentication.authorized, function (req, res, next) {
     if (!req.xhr) {
         req.logout();
         res.locals.isAuthenticated = false;
-        return res.status(400).render('errors/400', {title: 'Bad request'});
+        return res.status(400).render('errors/400');
     }
 
     filterApplications(req.user.id, search, start * PAGE_SIZE, PAGE_SIZE, function (err, result) {
@@ -76,7 +77,7 @@ router.post('/new', authentication.authorized, antiforgery.validateToken, functi
     application.offerUrl = req.body.offerUrl;
     application.companyUrl = req.body.companyUrl;
     application.contacts = req.body.contacts;
-    application.offerDate = new Date(req.body.offerDate);
+    application.offerDate = dateHelpers.fromLocalLongDate(req.body.offerDate, res.locals.locale.longDateFormat);
     application.applicationDate = new Date();
     application.notes = req.body.notes;
     application.result = req.body.result;
@@ -103,7 +104,7 @@ router.get('/:id', authentication.authorized, function (req, res, next) {
                 new applicationModels.Details(application, res.locals.locale.longDateFormat));
         }
         else {
-            req.session.errorMessage = 'Invalid application id';
+            req.session.errorMessage = 'Invalid application';
             res.redirect('/applications');
         }
     });
@@ -112,6 +113,7 @@ router.get('/:id', authentication.authorized, function (req, res, next) {
 // Private functions
 function getPageCount(totalCount) {
     var result = (totalCount / PAGE_SIZE) | 0;
+
     if (totalCount % PAGE_SIZE !== 0) {
         result++;
     }

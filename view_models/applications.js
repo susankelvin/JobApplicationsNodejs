@@ -2,8 +2,7 @@
 
 var dateHelpers = require('../utilities/dateHelpers');
 
-function Base(title, values, dateFormat) {
-    this.title = title || '';
+function Base(values, dateFormat) {
     values = values || {};
     this._id = values._id;
     this.position = values.position || '';
@@ -18,7 +17,7 @@ function Base(title, values, dateFormat) {
 }
 
 function New(antiforgeryToken, values, dateFormat) {
-    Base.call(this, 'New', values, dateFormat);
+    Base.call(this, values, dateFormat);
     this.antiforgeryToken = antiforgeryToken || '';
 }
 
@@ -26,7 +25,6 @@ New.prototype = Object.create(Base.prototype);
 New.prototype.constructor = New;
 
 function Index(applications, activePage, pageCount, dateFormat) {
-    this.title = 'History';
     this.applications = applications.map(function (item) {
         return new Details(item, dateFormat);
     });
@@ -35,7 +33,7 @@ function Index(applications, activePage, pageCount, dateFormat) {
 }
 
 function Details(values, dateFormat) {
-    Base.call(this, 'Details', values, dateFormat);
+    Base.call(this, values, dateFormat);
     this.applicationDate =
         values.applicationDate ? dateHelpers.toLocalLongDate(values.applicationDate, dateFormat) : '';
     this.result = values.result;
