@@ -15,28 +15,28 @@ html
                         span.icon-bar
                         span.icon-bar
                         span.icon-bar
-                    a.navbar-brand(href="/") Job applications
+                    a.navbar-brand(href="/", title="Home") Job applications
                 div.collapse.navbar-collapse
                     ul.nav.navbar-nav
                         if isAuthenticated
                             li
-                                a(href="/applications") Applications
+                                a(href="/applications", title="History") History
                             li
-                                a(href="/applications/new") New
+                                a(href="/applications/new", title="New") New
                     ul.nav.navbar-nav.navbar-right
                         if isAuthenticated
                             li
-                                a(href='/') Profile &nbsp;
+                                a(href='/', title="Profile") Profile &nbsp;
                                     span.glyphicon.glyphicon-user
                             li
-                                a#logout(href='/') Log out
+                                a#logout(href='/', title="Log out") Log out
                                 form(action="/users/logout", method="post")
                                     input#btnLogout.hidden(type="submit")
                         else
                             li
-                                a(href="/users/login") Login
+                                a(href="/users/login", title="Login") Login
                             li
-                                a(href='/users/register') Register
+                                a(href="/users/register", title="Register") Register
 
         if errorMessage
             div.alert.alert-danger= errorMessage
