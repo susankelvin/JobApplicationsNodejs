@@ -54,6 +54,12 @@ block content
                     strong Result
                 td.col-md-10= result
 
-    small
-        | Back to &nbsp;
-        a(href="/applications") History
+    div.row
+        div.col-sm-10.col-sm-offset-2
+            a.btn.btn-success(href="/applications/edit/" +_id, title="Edit") Edit
+            | &nbsp;
+            a.btn.btn-default(href="/applications", title="Back") Back
+
+    //small
+    //    | Back to &nbsp;
+    //    a(href="/applications") History

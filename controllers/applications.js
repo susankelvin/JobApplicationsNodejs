@@ -75,11 +75,13 @@ router.post('/new', authentication.authorized, antiforgery.validateToken, functi
 
     if (req.body.offerDate) {
         application.offerDate = dateHelpers.fromLocalLongDate(req.body.offerDate, res.locals.locale.longDateFormat);
-        req.session.errorMessage = 'Invalid offer date';
-        res.redirect('applications/new');
-        return;
+        if (!application.offerDate) {
+            req.session.errorMessage = 'Invalid offer date';
+            res.redirect('applications/new');
+            return;
+        }
     }
-    
+
     application.refNo = req.body.refNo;
     application.offerUrl = req.body.offerUrl;
     application.companyUrl = req.body.companyUrl;
