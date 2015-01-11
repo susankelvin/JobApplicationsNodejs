@@ -2,10 +2,14 @@
 
 var SALT_SIZE = 256;
 var crypto = require('crypto');
-var buffer = require('buffer');
 var User = require('../models/User');
 
-// callback(err, user)
+/**
+ * Register new user with name and password; returns error if username already exists
+ * @param {String} username username
+ * @param {String} password password
+ * @param {Function} callback function(err, user)
+ */
 function register(username, password, callback) {
     var salt,
         user,
@@ -21,37 +25,49 @@ function register(username, password, callback) {
     user.save(callback);
 }
 
-// callback(err, user)
-function login(username, password, callback){
-    var user,
-        passwordHash;
+/**
+ * Verify user credentials
+ * @param {String} username username
+ * @param {String} password password
+ * @param {Function} callback function(err, user)
+ */
+function login(username, password, callback) {
+    var passwordHash;
 
-        user = User.find({username: username}, function(err, user) {
-            if (err) {
-                callback(err);
-            }
-            else if (user && user.length === 1) {
-                passwordHash = hashPassword(password, user[0].salt);
-                if (passwordHash === user[0].passwordHash) {
-                    callback(null, user[0]);
-                }
-                else {
-                    callback(null, false);
-                }
+    User.find({username: username}, function (err, user) {
+        if (err) {
+            callback(err);
+        }
+        else if (user && user.length === 1) {
+            passwordHash = hashPassword(password, user[0].salt);
+            if (passwordHash === user[0].passwordHash) {
+                callback(null, user[0]);
             }
             else {
                 callback(null, false);
             }
-        });
+        }
+        else {
+            callback(null, false);
+        }
+    });
 }
 
-// callback(err, user)
-function findById(id, callback){
+/**
+ * Find user by id
+ * @param {String} id user's id
+ * @param {Function} callback function(err, user)
+ */
+function findById(id, callback) {
     User.findById(id, callback);
 }
 
-// callback(err, user)
-function findByName(username, callback){
+/**
+ * Find user by username
+ * @param {String} username username
+ * @param {Function} callback function(err, user)
+ */
+function findByName(username, callback) {
     User.findOne({username: username}, callback);
 }
 
