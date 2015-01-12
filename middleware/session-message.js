@@ -1,5 +1,10 @@
 'use strict';
 
+/**
+ * Express middleware that sets res.locals.errorMessage to value found in req.session.errorMessage
+ * and removes the last.
+ * @param {Object} app express application
+ */
 function config(app) {
     app.use(sessionMessage);
 }

@@ -3,6 +3,10 @@
 var TOKEN_NAME = '_RequestValidationToken';
 var uuid = require('node-uuid');
 
+/**
+ * Generate new antiforgery token
+ * @returns {String} antiforgery token
+ */
 function generateToken() {
     return uuid.v4();
 }
@@ -25,14 +29,19 @@ function validateToken(req, res, next) {
     }
 }
 
+/**
+ * Save antiforgery token to request session
+ * @param {Object} req Node request
+ * @param {String} token antiforgery token
+ */
 function setSessionToken(req, token) {
     req.session[TOKEN_NAME] = token;
 }
 
 /**
- * Generates new antiforgery token and saves it to request session
+ * Generate new antiforgery token and save it to request session
  * @param {Object} req Node request
- * @returns {String} Antiforgery token
+ * @returns {String} antiforgery token
  */
 function setup(req) {
     var antiforgeryToken = generateToken();

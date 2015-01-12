@@ -1,16 +1,17 @@
-/**
- * Sets res.locals.locale to Object {
- *  language: first value from 'Accept-Language' header; default is 'en'
- *  longDateFormat: format returned by moment#longDateFormat('LL')
- * }
- * http://momentjs.com/docs/#/i18n/locale-data
- */
 'use strict';
 
 var DEFAULT_CULTURE = 'en';
 var locale = require('locale');
 var moment = require('moment');
 
+/**
+ * Express middleware that sets res.locals.locale to Object {
+ *  language {String}: first value from 'Accept-Language' header; default is 'en'
+ *  longDateFormat {String}: format returned by moment#longDateFormat('LL')
+ * }
+ * http://momentjs.com/docs/#/i18n/locale-data
+ * @param {Object} app express application
+ */
 function config(app) {
     app.use(localization);
 }
