@@ -1,31 +1,39 @@
 extends ../shared/layout
 
 block title
-    title JobApplications | Register
+    title JobApplications | Profile
 
 block content
-    h1 Register
+    h1 Profile
     br
-    form.form-horizontal(action="/users/register", method="post", role="form")
+    form.form-horizontal(action="/users/profile", method="post", role="form")
         input(type="hidden", name="_RequestValidationToken", value="#{antiforgeryToken}")
         div.form-group
             label.control-label.col-md-2(for="username") Username
             div.col-md-10
-                input#username.form-control(type="text", name="username", value="#{username}", placeholder="Username", required,
-                    minlength="4", maxlength="20")
+                input#username.form-control(type="text", name="username", value="#{username}", readonly)
         div.form-group
-            label.control-label.col-md-2(for="password") Password
+            label.control-label.col-md-2(for="password") New password
             div.col-md-10
                 input#password.form-control(type="password", name="password", placeholder="Password", required,
-                    minlength="4", maxlength="20")
+                minlength="4", maxlength="20")
         div.form-group
             label.control-label.col-md-2(for="confirm-password") Confirm password
             div.col-md-10
                 input#confirm-password.form-control(type="password", name="confirm-password", placeholder="Confirm password", required,
-                    minlength="4", maxlength="20")
+                minlength="4", maxlength="20")
+        hr
+        div.form-group
+            div.panel.panel-info
+                div.panel-heading Security precaution
+
+        div.form-group
+            label.control-label.col-md-2(for="current-password") Current password
+            div.col-md-10
+                input#current-password.form-control(type="password", name="current-password", placeholder="Current password", required)
         div.form-group
             div.col-md-10.col-md-offset-2
-                button.btn.btn-primary(type="submit", title="Register") Register
+                button.btn.btn-primary(type="submit", title="Save") Save
                 | &nbsp;
                 a.btn.btn-success(href="/", title="Cancel") Cancel
 

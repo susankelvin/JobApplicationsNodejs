@@ -126,4 +126,13 @@ router.post('/logout', authentication.authorized, function (req, res) {
     res.redirect('/');
 });
 
+// Profile
+router.get('/profile', authentication.authorized, function (req, res, next) {
+    res.render('users/profile', new userModels.Profile(req.user.username, antiforgery.setup(req)));
+});
+
+router.post('/profile', authentication.authorized, antiforgery.validateToken, function (req, res, next) {
+        
+});
+
 module.exports = router;

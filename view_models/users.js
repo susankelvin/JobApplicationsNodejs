@@ -19,7 +19,15 @@ function Login(username, antiforgeryToken) {
 Login.prototype = Object.create(Base.prototype);
 Login.prototype.constructor = Login;
 
+function Profile(username, antiforgeryToken) {
+    Base.call(this, username, antiforgeryToken);
+}
+
+Profile.prototype = Object.create(Base.prototype);
+Profile.prototype.constructor = Profile;
+
 module.exports = {
     Registration: Registration,
-    Login: Login
+    Login: Login,
+    Profile: Profile
 };
