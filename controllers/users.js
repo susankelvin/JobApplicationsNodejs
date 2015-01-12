@@ -81,16 +81,6 @@ router.post('/register', antiforgery.validateToken, function (req, res, next) {
     });
 });
 
-function usernameValid(username) {
-    return username && (username.length >= USERNAME_MIN_LENGTH) && (username.length <= USERNAME_MAX_LENGTH) &&
-        USERNAME_PATTERN.test(username);
-}
-
-function passwordValid(password) {
-    return password && (password.length >= PASSWORD_MIN_LENGTH) && (password.length <= PASSWORD_MAX_LENGTH) &&
-        PASSWORD_PATTERN.test(password);
-}
-
 // Login
 router.get('/login', function (req, res) {
     res.render('users/login', new userModels.Login('', antiforgery.setup(req)));
@@ -132,7 +122,44 @@ router.get('/profile', authentication.authorized, function (req, res, next) {
 });
 
 router.post('/profile', authentication.authorized, antiforgery.validateToken, function (req, res, next) {
-        
+    var newPassword = req.body.password;
+
+    if (!passwordValid(newPassword)) {
+        res.locals.errorMessage = 'Invalid new password';
+        res.status(400).render('users/profile', new userModels.Profile(req.user.username, antiforgery.setup(req)));
+        return;
+    }
+
+    if (newPassword !== req.body['confirm-password']) {
+        res.locals.errorMessage = 'Passwords do not match.';
+        res.status(400).render('users/profile', new userModels.Profile(req.user.username, antiforgery.setup(req)));
+        return;
+    }
+
+    userManager.update(req.user.id, req.body['current-password'], newPassword, function (err, user){
+        if (err) {
+            next(err);
+        }
+        else if (user || (user !== false)) {
+            req.logout();
+            res.redirect('/users/login');
+        }
+        else {
+            res.locals.errorMessage = 'Invalid password';
+            res.status(400).render('users/profile', new userModels.Profile(req.user.username, antiforgery.setup(req)));
+        }
+    });
 });
+
+// Helpers
+function usernameValid(username) {
+    return username && (username.length >= USERNAME_MIN_LENGTH) && (username.length <= USERNAME_MAX_LENGTH) &&
+        USERNAME_PATTERN.test(username);
+}
+
+function passwordValid(password) {
+    return password && (password.length >= PASSWORD_MIN_LENGTH) && (password.length <= PASSWORD_MAX_LENGTH) &&
+        PASSWORD_PATTERN.test(password);
+}
 
 module.exports = router;

@@ -6,7 +6,7 @@ block title
 block content
     h1 Profile
     br
-    form.form-horizontal(action="/users/profile", method="post", role="form")
+    form#frmProfile.form-horizontal(action="/users/profile", method="post", role="form")
         input(type="hidden", name="_RequestValidationToken", value="#{antiforgeryToken}")
         div.form-group
             label.control-label.col-md-2(for="username") Username
@@ -23,10 +23,10 @@ block content
                 input#confirm-password.form-control(type="password", name="confirm-password", placeholder="Confirm password", required,
                 minlength="4", maxlength="20")
         hr
-        div.form-group
+        div.row
             div.panel.panel-info
                 div.panel-heading Security precaution
-
+                div.panel-body Please, enter Your password to verify You are the account principal.
         div.form-group
             label.control-label.col-md-2(for="current-password") Current password
             div.col-md-10
@@ -35,20 +35,17 @@ block content
             div.col-md-10.col-md-offset-2
                 button.btn.btn-primary(type="submit", title="Save") Save
                 | &nbsp;
-                a.btn.btn-success(href="/", title="Cancel") Cancel
+                a.btn.btn-success(href="/applications", title="Cancel") Cancel
 
 block scripts
     script(src="/javascripts/jquery.validate.js")
     script(src="/javascripts/additional-methods.js")
 
     script.
-        $("form").validate({
+        $("#frmProfile").validate({
             errorClass: "text-danger",
             errorElement: "span",
             rules: {
-                username: {
-                    pattern: /^[\w@%\.]+$/
-                },
                 password: {
                     pattern: /^\w+$/
                 },
@@ -57,9 +54,6 @@ block scripts
                 }
             },
             messages: {
-                username: {
-                    pattern: 'Allowed characters: a-zA-Z0-9_@%.'
-                },
                 password: {
                     pattern: "Allowed characters: a-zA-Z0-9_"
                 },
