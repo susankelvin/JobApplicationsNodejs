@@ -16,6 +16,11 @@ var antiforgery = require('../middleware/antiforgery');
 
 // Register
 router.get('/register', function (req, res) {
+    if (res.locals.isAuthenticated) {
+        req.logout();
+        res.locals.isAuthenticated = false;
+    }
+
     res.render('users/register', new userModels.Registration('', antiforgery.setup(req)));
 });
 
@@ -83,6 +88,11 @@ router.post('/register', antiforgery.validateToken, function (req, res, next) {
 
 // Login
 router.get('/login', function (req, res) {
+    if (res.locals.isAuthenticated) {
+        req.logout();
+        res.locals.isAuthenticated = false;
+    }
+    
     res.render('users/login', new userModels.Login('', antiforgery.setup(req)));
 });
 
