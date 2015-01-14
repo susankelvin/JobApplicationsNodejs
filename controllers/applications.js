@@ -1,6 +1,6 @@
 'use strict';
 
-var PAGE_SIZE = 2;
+var PAGE_SIZE = 10;
 var express = require('express');
 var router = express.Router();
 var authentication = require('../middleware/authentication');

@@ -92,7 +92,7 @@ router.get('/login', function (req, res) {
         req.logout();
         res.locals.isAuthenticated = false;
     }
-    
+
     res.render('users/login', new userModels.Login('', antiforgery.setup(req)));
 });
 

@@ -1,9 +1,8 @@
 'use strict';
 
-function config(app){
-    var CONNECTION_STRING = 'mongodb://localhost/JobApplications';
+function config(app, connectionString){
     var mongoose = require('mongoose');
-    mongoose.connect(CONNECTION_STRING);
+    mongoose.connect(connectionString);
     var db = mongoose.connection;
     db.on('error', console.error.bind(console, 'connection error:'));
 }
