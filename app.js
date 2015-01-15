@@ -11,10 +11,10 @@ var app = express();
 var configuration = environment[app.get('env')];
 
 // set up application
+database.config(app, configuration.connectionString);
 settings.config(app);
 routes.config(app);
 error.config(app);
-database.config(app, configuration.connectionString);
 
 app.set('port', configuration.port);
 

@@ -3,7 +3,7 @@
 function config(app) {
     // catch 404
     app.use(function (req, res, next) {
-        res.status(404).render('errors/404', {title: 'Not found'});
+        res.status(404).render('errors/404');
     });
 
     // error handlers
@@ -13,7 +13,7 @@ function config(app) {
     if (app.get('env') === 'development') {
         app.use(function (err, req, res, next) {
             res.status(err.status || 500);
-            res.render('error', {
+            res.render('error-debug', {
                 message: err.message,
                 error: err
             });
@@ -24,10 +24,7 @@ function config(app) {
     // no stacktraces leaked to user
     app.use(function (err, req, res, next) {
         res.status(err.status || 500);
-        res.render('error', {
-            message: err.message,
-            error: {}
-        });
+        res.render('error');
     });
 }
 
