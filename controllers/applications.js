@@ -25,7 +25,7 @@ router.get('/', authentication.authorized, function (req, res, next) {
 
 // Update applications' table by AJAX get request
 router.get('/update', authentication.authorized, function (req, res, next) {
-    var start = +req.query.page || 0,
+    var start = +req.query.page | 0,
         search = req.query.search || '';
 
     if (!req.xhr) {
@@ -36,7 +36,7 @@ router.get('/update', authentication.authorized, function (req, res, next) {
 
     filterApplications(req.user.id, search, start * PAGE_SIZE, PAGE_SIZE, function (err, result) {
         if (err) {
-            res.status(400).end();
+            res.sendStatus(400);
         }
         else {
             res.render('applications/_applicationsTable',
@@ -44,7 +44,7 @@ router.get('/update', authentication.authorized, function (req, res, next) {
                     res.locals.locale.longDateFormat),
                 function (err, html) {
                     if (err) {
-                        res.status(400).end();
+                        res.sendStatus(400);
                     }
                     else {
                         res.send(html);
