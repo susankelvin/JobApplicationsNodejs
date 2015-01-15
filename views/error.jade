@@ -1,9 +1,15 @@
 extends shared/layout
 
 block title
-  title JobApplications | Error
-  
+    title JobApplications | Error
+
 block content
-  h1= message
-  h2= error.status
-  pre #{error.stack}
+    div.panel.panel-danger
+        div.panel-heading
+            h2 Error
+        div.panel-body.
+            We are not able to process Your request. Please, try again.
+        div.panel-footer
+            small
+                | Back to &nbsp;
+                a(href="/", title="Home") Home
